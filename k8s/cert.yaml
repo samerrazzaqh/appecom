@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: samer-form-tls
+  namespace: workshop-samer
+spec:
+  dnsNames:
+    - samer-kubernetes.infra-x.cloud
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: praxis-form-letsencrypt-prod
+  secretName: samer-form-tls
+  usages:
+    - digital signature
+    - key encipherment

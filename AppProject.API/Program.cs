@@ -29,7 +29,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("CORSPolicy",
         builder =>
         {
-            builder.WithOrigins("http://localhost:6001", "https://localhost:6000","https://samer.runasp.net")
+            builder.WithOrigins("http://localhost:6001", "https://localhost:6000","https://samer.runasp.net","https://samer-kubernetes.infra-x.cloud")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();
