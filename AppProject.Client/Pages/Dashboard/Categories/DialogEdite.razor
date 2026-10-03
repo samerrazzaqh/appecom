@@ -1,0 +1,50 @@
+@attribute [Authorize]
+
+
+
+<MudDialog>
+    <DialogContent>
+
+        <EditForm Model="@EditeCategoryVM" OnValidSubmit="HandleEdite">
+            <DataAnnotationsValidator />
+            <MudGrid>
+                <MudItem xs="12" sm="7">
+                    <MudCard>
+                        <MudCardContent>
+                            <MudTextField Label="Name Category"
+                                          @bind-Value="EditeCategoryVM!.name" For="@(() => EditeCategoryVM!.name)" />
+                            <MudTextField Label="Description"
+                                          @bind-Value="EditeCategoryVM!.description" For="@(() => EditeCategoryVM!.description)" />
+
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Update</MudButton>
+                        </MudCardActions>
+
+
+                    </MudCard>
+                </MudItem>
+                <MudItem xs="12" sm="5">
+                    <MudPaper Class="pa-4 mud-height-full">
+                        <MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+                        @if (ShowMessage)
+                        {
+                            <MudAlert Severity="Severity.Warning">@Message</MudAlert>
+                        }
+                        else
+                        {
+                            <MudText Color="@Color.Error">
+                                <ValidationSummary />
+                            </MudText>
+                        }
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>

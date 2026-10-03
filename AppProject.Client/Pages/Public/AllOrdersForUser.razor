@@ -1,0 +1,167 @@
+@page "/AllOrdersForUser"
+@attribute [Authorize]
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-8 mb-12">
+    <!-- Header & Search -->
+    <div class="d-flex flex-column flex-sm-row justify-space-between align-start align-sm-center mb-6 gap-4">
+        <div>
+            <MudText Typo="Typo.h4" Class="bold color-light">My Orders</MudText>
+            <MudText Typo="Typo.body2" Class="mud-text-secondary">Track and manage your order history</MudText>
+        </div>
+
+        @if (!IsLoading && Orders.Any())
+        {
+            <MudTextField @bind-Value="SearchTerm"
+                          Placeholder="Search by ID, Product, Status..."
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search"
+                          IconSize="Size.Medium"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Class="search-input rounded-lg"
+                          Immediate="true" />
+        }
+    </div>
+
+    <!-- Filter Status Chips -->
+    @if (!IsLoading && Orders.Any())
+    {
+        <div class="d-flex align-center gap-2 mb-6 overflow-x-auto py-1">
+            <MudChip T="string" 
+                     Variant="@(!SelectedStatusFilter.HasValue ? Variant.Filled : Variant.Outlined)" 
+                     Color="Color.Primary" 
+                     OnClick='() => SetStatusFilter(null)' 
+                     Class="bold cursor-pointer">
+                All (@Orders.Count)
+            </MudChip>
+
+            <MudChip T="string" 
+                     Variant="@(SelectedStatusFilter == Status.Pending ? Variant.Filled : Variant.Outlined)" 
+                     Color="Color.Warning" 
+                     OnClick='() => SetStatusFilter(Status.Pending)' 
+                     Class="bold cursor-pointer">
+                Pending (@Orders.Count(o => o.Status.Equals(Status.Pending.ToString(), StringComparison.OrdinalIgnoreCase)))
+            </MudChip>
+
+            <MudChip T="string" 
+                     Variant="@(SelectedStatusFilter == Status.PaymentReceived ? Variant.Filled : Variant.Outlined)" 
+                     Color="Color.Success" 
+                     OnClick='() => SetStatusFilter(Status.PaymentReceived)' 
+                     Class="bold cursor-pointer">
+                Completed (@Orders.Count(o => o.Status.Equals(Status.PaymentReceived.ToString(), StringComparison.OrdinalIgnoreCase)))
+            </MudChip>
+
+            <MudChip T="string" 
+                     Variant="@(SelectedStatusFilter == Status.PaymentFaild ? Variant.Filled : Variant.Outlined)" 
+                     Color="Color.Error" 
+                     OnClick='() => SetStatusFilter(Status.PaymentFaild)' 
+                     Class="bold cursor-pointer">
+                Failed (@Orders.Count(o => o.Status.Equals(Status.PaymentFaild.ToString(), StringComparison.OrdinalIgnoreCase)))
+            </MudChip>
+        </div>
+    }
+
+    <!-- Content Rendering -->
+    @if (IsLoading)
+    {
+        <div class="d-flex justify-center align-center my-12" style="min-height: 350px;">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+        </div>
+    }
+    else if (!Orders.Any())
+    {
+        <MudPaper Elevation="2" Class="pa-12 text-center rounded-xl order-card border-dashed">
+            <MudIcon Icon="@Icons.Material.Outlined.ShoppingBag" Color="Color.Primary" Style="font-size: 5rem;" Class="mb-4 opacity-75" />
+            <MudText Typo="Typo.h5" Class="bold mb-2">No Orders Found</MudText>
+            <MudText Typo="Typo.body1" Class="mud-text-secondary mb-6">You haven't placed any orders yet.</MudText>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GoToHome" Class="px-8 py-2 rounded-lg bold hover-bounce">
+                Start Shopping
+            </MudButton>
+        </MudPaper>
+    }
+    else if (!FilteredOrders.Any())
+    {
+        <MudPaper Elevation="1" Class="pa-8 text-center rounded-xl order-card">
+            <MudIcon Icon="@Icons.Material.Outlined.SearchOff" Color="Color.Warning" Style="font-size: 3.5rem;" Class="mb-3" />
+            <MudText Typo="Typo.h6" Class="bold">No matching orders found</MudText>
+            <MudText Typo="Typo.body2" Class="mud-text-secondary">Try changing your search term or status filter.</MudText>
+        </MudPaper>
+    }
+    else
+    {
+        <div class="d-flex flex-column gap-5">
+            @foreach (var order in FilteredOrders)
+            {
+                <MudPaper Elevation="2" Class="pa-6 rounded-xl order-card position-relative overflow-hidden">
+                    <div class="d-flex flex-column flex-md-row justify-space-between align-start align-md-center gap-4 mb-4">
+                        <div class="d-flex align-center gap-3">
+                            <MudAvatar Color="Color.Primary" Variant="Variant.Filled" Size="Size.Medium">
+                                <MudIcon Icon="@Icons.Material.Outlined.Receipt" />
+                            </MudAvatar>
+                            <div>
+                                <MudText Typo="Typo.subtitle1" Class="bold">Order #@order.Id</MudText>
+                                <MudText Typo="Typo.caption" Class="mud-text-secondary">Placed on @order.OrderDate.ToString("MMM dd, yyyy")</MudText>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-center gap-3 align-self-stretch justify-space-between justify-sm-end">
+                            <MudChip T="string" Color="@GetStatusColor(order.Status)" Variant="Variant.Filled" Size="Size.Small" Class="bold px-3">
+                                @order.Status
+                            </MudChip>
+
+                            <MudButton Variant="Variant.Outlined" 
+                                       Color="Color.Primary" 
+                                       Size="Size.Small" 
+                                       EndIcon="@Icons.Material.Filled.ChevronRight" 
+                                       OnClick="@(() => ViewOrderDetails(order.Id))"
+                                       Class="rounded-lg view-btn">
+                                Details
+                            </MudButton>
+                        </div>
+                    </div>
+
+                    <MudDivider Class="my-3 opacity-50" />
+
+                    <div class="d-flex flex-column flex-sm-row justify-space-between align-start align-sm-center gap-4 mt-2">
+                        <!-- Product Thumbnails Container -->
+                        <div class="d-flex align-center gap-3 overflow-x-auto py-1 thumbnails-container">
+                            @foreach (var item in order.OrderItems.Take(4))
+                            {
+                                <div class="d-flex align-center gap-1">
+                                    <div class="thumb-wrapper rounded-lg position-relative" title="@item.ProductName">
+                                        <img src="@item.MainImage" alt="@item.ProductName" class="thumb-img" />
+                                        @if (item.Quntity > 1)
+                                        {
+                                            <span class="qty-badge">x@item.Quntity</span>
+                                        }
+                                    </div>
+
+                                    @if (order.Status.Equals(Status.PaymentReceived.ToString(), StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        <MudIconButton Icon="@Icons.Material.Filled.StarRate" 
+                                                       Color="Color.Warning" 
+                                                       Size="Size.Medium" 
+                                                       Title="Rate Product"
+                                                       OnClick="@(() => OpenRatingDialogAsync(item.ProductItemId, item.ProductName))" />
+                                    }
+                                </div>
+                            }
+                            @if (order.OrderItems.Count > 4)
+                            {
+                                <div class="thumb-wrapper rounded-lg more-items-badge">
+                                    +@(order.OrderItems.Count - 4)
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Total -->
+                        <div class="text-sm-right align-self-end align-self-sm-center">
+                            <MudText Typo="Typo.caption" Class="mud-text-secondary">Total Amount</MudText>
+                            <MudText Typo="Typo.h6" Class="bold color-primary">$@order.Total.ToString("N2")</MudText>
+                        </div>
+                    </div>
+                </MudPaper>
+            }
+        </div>
+    }
+</MudContainer>

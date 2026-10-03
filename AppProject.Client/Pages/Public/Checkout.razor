@@ -1,0 +1,155 @@
+@page "/Checkout"
+@attribute [Authorize]
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-6 mb-10">
+    <MudText Typo="Typo.h4" Class="bold mb-6 color-light">Checkout</MudText>
+
+    @if (isLoading)
+    {
+        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"/>
+    }
+    else
+    {
+        <MudGrid>
+            <!-- Left Side: Stepper Steps -->
+            <MudItem xs="12" md="8">
+                <MudPaper Elevation="3" Class="pa-6 rounded-lg checkout-paper">
+                    <MudStepper @bind-ActiveIndex="_activeIndex" Color="Color.Primary" Variant="Variant.Filled"
+                                StepLineColor="Color.Primary">
+
+                        <!-- Step 1: Address -->
+                        <MudStep Title="Fill out your Address" HasError="!IsAddressValid">
+                            <MudText Typo="Typo.h6" Class="mb-4">Shipping Address</MudText>
+
+                            <EditForm Model="addressRs">
+                                <DataAnnotationsValidator/>
+                                <MudGrid>
+                                    <MudItem xs="12" sm="6">
+                                        <MudTextField @bind-Value="addressRs.firstName" Label="First Name *"
+                                                      Variant="Variant.Outlined" Required="true"
+                                                      RequiredError="First name is required"
+                                                      For="@(() => addressRs.firstName)"/>
+                                    </MudItem>
+                                    <MudItem xs="12" sm="6">
+                                        <MudTextField @bind-Value="addressRs.lastName" Label="Last Name *"
+                                                      Variant="Variant.Outlined" Required="true"
+                                                      RequiredError="Last name is required"
+                                                      For="@(() => addressRs.lastName)"/>
+                                    </MudItem>
+                                    <MudItem xs="12">
+                                        <MudTextField @bind-Value="addressRs.street" Label="Street *"
+                                                      Variant="Variant.Outlined" Required="true"
+                                                      RequiredError="Street is required"
+                                                      For="@(() => addressRs.street)"/>
+                                    </MudItem>
+                                    <MudItem xs="12" sm="4">
+                                        <MudTextField @bind-Value="addressRs.city" Label="City *"
+                                                      Variant="Variant.Outlined" Required="true"
+                                                      RequiredError="City is required" For="@(() => addressRs.city)"/>
+                                    </MudItem>
+                                    <MudItem xs="12" sm="4">
+                                        <MudTextField @bind-Value="addressRs.state" Label="State *"
+                                                      Variant="Variant.Outlined" Required="true"
+                                                      RequiredError="State is required" For="@(() => addressRs.state)"/>
+                                    </MudItem>
+                                    <MudItem xs="12" sm="4">
+                                        <MudTextField @bind-Value="addressRs.zipCode" Label="Zip Code *"
+                                                      Variant="Variant.Outlined" Required="true"
+                                                      RequiredError="Zip code is required"
+                                                      For="@(() => addressRs.zipCode)"/>
+                                    </MudItem>
+                                </MudGrid>
+                            </EditForm>
+                        </MudStep>
+
+                        <!-- Step 2: Delivery Method (تم إضافة الوسم الحاضن هنا) -->
+                        <MudStep Title="Delivery">
+                            <MudText Typo="Typo.h6" Class="mb-4">Select Shipping Method</MudText>
+
+                            @if (deliveryMethods.Any())
+                            {
+                                <MudRadioGroup T="int" @bind-Value="selectedDeliveryMethodId" Class="w-100">
+                                    <MudGrid Spacing="3">
+                                        @foreach (var method in deliveryMethods)
+                                        {
+                                            <MudItem xs="12" sm="6">
+                                                <MudRadio T="int" Value="@method.Id" Color="Color.Primary"
+                                                          Class="w-100 ma-0">
+                                                    <MudPaper Elevation="1"
+                                                              Class="pa-4 rounded-lg cursor-pointer h-100 delivery-option">
+                                                        <div class="d-flex flex-column align-start ml-2">
+                                                            <MudText Typo="Typo.subtitle1"
+                                                                     Class="bold">@method.Name</MudText>
+                                                            <MudText Typo="Typo.body2"
+                                                                     Class="mud-text-secondary my-1">@method.Description (@method.DeliveryTime)
+                                                            </MudText>
+                                                            <MudText Typo="Typo.subtitle2" Class="color-primary bold">
+                                                                $@method.Price.ToString("N2")</MudText>
+                                                        </div>
+                                                    </MudPaper>
+                                                </MudRadio>
+                                            </MudItem>
+                                        }
+                                    </MudGrid>
+                                </MudRadioGroup>
+                            }
+                            else
+                            {
+                                <MudText Typo="Typo.body2" Class="mud-text-secondary">No delivery methods available.
+                                </MudText>
+                            }
+                        </MudStep>
+
+                        <!-- Step 3: Payment -->
+                        <MudStep Title="Payment">
+                            <MudText Typo="Typo.h6" Class="mb-4">Complete Payment</MudText>
+                            <MudText Typo="Typo.body1" Class="mb-6">Click the button below to proceed securely with
+                                Stripe Payment Gateway.
+                            </MudText>
+
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       Size="Size.Large"
+                                       StartIcon="@Icons.Material.Filled.CreditCard"
+                                       OnClick="HandlePayment"
+                                       Class="py-3 px-6">
+                                Pay with Stripe ($@TotalPrice.ToString("N2"))
+                            </MudButton>
+                        </MudStep>
+
+                    </MudStepper>
+                </MudPaper>
+            </MudItem>
+
+            <!-- Right Side: Order Summary -->
+            <MudItem xs="12" md="4">
+                <MudPaper Elevation="3" Class="pa-6 rounded-lg checkout-paper">
+                    <MudText Typo="Typo.h6" Class="bold mb-2 text-center color-primary">ORDER SUMMARY</MudText>
+                    <MudText Typo="Typo.caption" Class="mud-text-secondary d-block text-center mb-4">
+                        Shipping cost depends on selected delivery option
+                    </MudText>
+
+                    <MudDivider Class="mb-4"/>
+
+                    <div class="d-flex justify-space-between mb-3">
+                        <MudText Typo="Typo.body1">Order SubTotal</MudText>
+                        <MudText Typo="Typo.body1" Class="bold">$@Subtotal.ToString("N2")</MudText>
+                    </div>
+
+                    <div class="d-flex justify-space-between mb-3">
+                        <MudText Typo="Typo.body1">Order Shipping</MudText>
+                        <MudText Typo="Typo.body1" Class="bold">$@selectedShippingPrice.ToString("N2")</MudText>
+                    </div>
+
+                    <MudDivider Class="my-4"/>
+
+                    <div class="d-flex justify-space-between align-center">
+                        <MudText Typo="Typo.h6" Class="bold">Order Total</MudText>
+                        <MudText Typo="Typo.h5" Class="bold color-primary">$@TotalPrice.ToString("N2")</MudText>
+                    </div>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    }
+</MudContainer>
+

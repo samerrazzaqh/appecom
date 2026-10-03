@@ -1,0 +1,34 @@
+@attribute [Authorize]
+
+
+
+<MudDialog>
+    <DialogContent>
+
+        <EditForm Model="@RolesVm" OnValidSubmit="HandleCreate">
+            <DataAnnotationsValidator />
+            <MudGrid>
+                <MudItem xs="12" sm="12">
+                    <MudCard>
+                        <MudCardContent>
+                            <MudTextField Label="Name Role"
+                                          @bind-Value="RolesVm.RoleName" For="@(() => RolesVm.RoleName)" />
+
+
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Add</MudButton>
+                        </MudCardActions>
+
+
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>

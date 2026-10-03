@@ -1,0 +1,40 @@
+@page "/Account/active"
+@using AppProject.Client.Models.ViewModels.Account
+@using AppProject.Client.Service.Account
+@inject NavigationManager NavigationManager
+@layout EmptyLayout
+
+@code {
+    [SupplyParameterFromQuery]
+    public string? Email { get; set; }
+
+    [SupplyParameterFromQuery]
+    public string? Code { get; set; }
+    
+    [Inject]
+    public IAccountService? accountService { get; set; }
+    public ActiveAccountVM activeAccountVm = new ActiveAccountVM();
+    
+    protected async override void OnInitialized()
+    {
+        if (!string.IsNullOrEmpty(Code))
+        {
+            activeAccountVm.Token = Uri.UnescapeDataString(Code);
+            activeAccountVm.Email = Email;
+        }
+
+        string Message;
+        var result = await accountService!.Active(activeAccountVm);
+        if (result == true)
+        {
+            Message = "The account has been successfully activated.";
+            NavigationManager.NavigateTo($"/login?success={true}&messageactive={Message}");
+        }
+        else
+        {
+            Message = "The account has not been activated.";
+            NavigationManager.NavigateTo($"/login?success={false}&messageactive={Message}");
+        }
+        
+    }
+}

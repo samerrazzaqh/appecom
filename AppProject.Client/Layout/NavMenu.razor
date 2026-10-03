@@ -1,0 +1,22 @@
+﻿@* @inject NavigationManager Navigation *@
+<MudNavMenu>
+
+    <AuthorizeView>
+        <Authorized>
+            
+            <MudNavLink Href="/profile" Match="NavLinkMatch.All" Icon="@Icons.Material.Sharp.Person">@context.User.FindFirst(ClaimTypes.Name)?.Value</MudNavLink>
+            
+            <MudNavLink Href="/dashboard" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">DashBoard</MudNavLink>
+            <MudNavLink Href="/listusers" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Person">Users</MudNavLink>
+            <MudNavLink Href="/listroles" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.DesignServices">Roles</MudNavLink>
+            <MudNavLink Href="/ListProducts" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.List">Products</MudNavLink>
+            <MudNavLink Href="/listcategory" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Category">Category</MudNavLink>
+
+
+        </Authorized>
+        <NotAuthorized>
+            <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+        </NotAuthorized>
+    </AuthorizeView>
+
+</MudNavMenu>

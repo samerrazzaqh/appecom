@@ -1,0 +1,106 @@
+@page "/listusers"
+@attribute [Authorize]
+
+
+
+<PageTitle>Users</PageTitle>
+
+@if (isLoading)
+{
+    <MudOverlay Visible="true" DarkBackground="true" Absolute="false" Style="z-index: 9999;">
+        <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true"/>
+    </MudOverlay>
+}
+
+<MudContainer Style="padding-top:inherit;" MaxWidth="MaxWidth.Large">
+    <MudGrid Class="mb-4">
+        <MudItem xs="12">
+            <MudPaper Class="pa-4 mud-theme-primary elevation-2">
+                <MudText Align="Align.Center" Typo="Typo.h4">Users</MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    <MudContainer Style="padding-top:10px;" MaxWidth="MaxWidth.Large">
+
+        @* <MudPaper Style="background-color:transparent; padding-bottom:10px;" Class="d-flex justify-start flex-grow-1 gap-4" Elevation="0"> *@
+        @*     <MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined"> *@
+        @*         <MudButton >Create Role</MudButton> *@
+        @*     </MudButtonGroup> *@
+        @* </MudPaper> *@
+
+        <MudGrid>
+            <MudItem xs="12" sm="12" md="12">
+                <MudTable ServerData="LoadServerData" Hover="true" @ref="table">
+                    <ToolBarContent>
+                        <MudSpacer/>
+                        <MudTextField T="string"
+                                      ValueChanged="@(s => OnSearch(s))"
+                                      Placeholder="Search"
+                                      Adornment="Adornment.Start"
+                                      AdornmentIcon="@Icons.Material.Filled.Search"
+                                      IconSize="Size.Medium"
+                                      Class="mt-0"
+                                      Immediate="false"
+                                      DebounceInterval="500"/>
+                    </ToolBarContent>
+
+                    <ColGroup>
+                        <col style="width: 70px;"/>
+                        <col/>
+                        <col style="width: 140px;"/>
+                    </ColGroup>
+
+                    <HeaderContent>
+                        <MudTh>#</MudTh>
+                        <MudTh>User Name</MudTh>
+                        <MudTh Style="text-align: center;">Actions</MudTh>
+                    </HeaderContent>
+
+                    <RowTemplate>
+                        <MudTd DataLabel="#">@(GetRowIndex(context))</MudTd>
+                        <MudTd DataLabel="User Name">@context.UserName</MudTd>
+                        <MudTd DataLabel="Actions" Style="text-align: center;">
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                           Variant="Variant.Outlined"
+                                           Color="Color.Info"
+                                           Size="Size.Small"
+                                           OnClick="@(() => OnEditUser(context))"
+                                           Class="mr-1"/>
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                           Variant="Variant.Outlined"
+                                           Color="Color.Error"
+                                           Size="Size.Small"
+                                           OnClick="@(() => OnDeleteUser(context))"/>
+                        </MudTd>
+                    </RowTemplate>
+
+                    <NoRecordsContent>
+                        <MudText Align="Align.Center" Class="py-4">No users found.</MudText>
+                    </NoRecordsContent>
+
+                    <LoadingContent>
+                        <MudText Align="Align.Center" Class="py-4">Loading data...</MudText>
+                    </LoadingContent>
+
+                    <PagerContent>
+                        <MudTablePager PageSizeOptions="new int[] { 5, 10, 25, 50 }"
+                                       RowsPerPageString="Rows per page:"/>
+                    </PagerContent>
+                </MudTable>
+            </MudItem>
+        </MudGrid>
+
+
+    </MudContainer>
+
+
+</MudContainer>
+
+
+
+
+
+
+
+

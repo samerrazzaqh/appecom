@@ -1,0 +1,219 @@
+@page "/profile"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<MudOverlay @bind-Visible="isVisible" DarkBackground="true" AutoClose="true">
+    <MudProgressCircular Color="Color.Primary" Size="Size.Medium" Indeterminate="true"/>
+</MudOverlay>
+<PageTitle>Info User</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large">
+    @if (addressRs == null)
+    {
+        <MudPaper Class="pa-4 ma-2" Elevation="0">
+            <MudText Typo="Typo.h5">Not Found Data</MudText>
+        </MudPaper>
+    }
+    else
+    {
+        <MudGrid Style="padding-bottom:150px;">
+            <MudItem xs="12" sm="12" md="12">
+                <MudPaper Elevation="0" Class="pa-4" Style="background-color: transparent; height: 200px;">
+                    @{
+                        <MudImage Style=" width:100%;" ObjectFit="ObjectFit.Fill" Height="250"
+                                  Src=@($"{AppConstant.BaseApiAddress}{"Images/test/cover.png"}") Elevation="25" Class="rounded-lg"/>
+                    }
+
+
+
+                    @*Upload Image=============================================*@
+                    <MudItem Style="margin-top:-50px;" xs="12" sm="6">
+                    </MudItem>
+
+
+                    @*Image=============================================*@
+                    <MudItem Style="margin-left: 50px; margin-right: 50px; margin-top: -50px;" xs="12" sm="6">
+                        <MudGrid>
+                            <MudItem xs="4">
+                                @{
+                                    <MudAvatar Elevation="5" Style="height:150px; width:150px; font-size:2rem;"
+                                               Color="Color.Primary">
+                                        <MudImage Src=@($"{AppConstant.BaseApiAddress}{"Images/test/user1.png"}")></MudImage>
+                                    </MudAvatar>
+                                }
+
+
+
+                                @*Upload Image=============================================*@
+                                <MudItem Style="margin-top:-50px;" xs="12" sm="6">
+                                </MudItem>
+
+
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+                    @*========================================================*@
+
+
+
+
+
+
+
+                    @*==============Name =============================================*@
+                    <MudItem Style="margin-left: 250px; margin-right: 250px; margin-top: -100px;" xs="12" sm="12"
+                             md="12">
+                        <MudGrid>
+                            <MudItem xs="12" sm="12" md="12">
+                                @{
+                                    if (addressRs.firstName == null || addressRs.firstName == ""
+                                                                    || addressRs.lastName == null || addressRs.lastName == "")
+                                    {
+                                        <MudSkeleton Animation="Animation.Wave"/>
+                                    }
+                                    else
+                                    {
+                                        <MudText Typo="Typo.h5">@addressRs.firstName @addressRs.lastName</MudText>
+                                    }
+                                }
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+                    @*========================================================*@
+
+
+                </MudPaper>
+
+            </MudItem>
+
+        </MudGrid>
+    }
+
+
+
+    <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.Large">
+
+        @*========================================================*@
+        <MudPaper Style="background-color:transparent; padding-bottom:10px;"
+                  Class="d-flex justify-end flex-grow-1 gap-4" Elevation="0">
+            <MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
+                <MudButton OnClick="GoEditeInfo">Edite Information</MudButton>
+                <MudButton OnClick="GoAllyourOrders">All your Orders</MudButton>
+            </MudButtonGroup>
+        </MudPaper>
+        @*========================================================*@
+
+
+
+
+
+
+
+
+        <MudGrid>
+
+            <MudItem xs="12" sm="12" md="12">
+
+                <MudTabs Centered="true" Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+
+                    <MudTabPanel Text="Information User">
+
+                        <MudTimeline TimelineOrientation="TimelineOrientation.Vertical"
+                                     TimelinePosition="TimelinePosition.Start">
+
+                            <MudTimelineItem Color="Color.Primary" Variant="Variant.Filled">
+                                <ItemContent>
+                                    @{
+                                        if (addressRs.firstName == null || addressRs.firstName == ""
+                                                                        || addressRs.lastName == null || addressRs.lastName == "")
+                                        {
+                                            <MudSkeleton Animation="Animation.Wave"/>
+                                        }
+                                        else
+                                        {
+                                            <MudText Color="Color.Inherit">FullName
+                                                : @addressRs.firstName @addressRs.lastName</MudText>
+                                        }
+                                    }
+                                </ItemContent>
+                            </MudTimelineItem>
+
+                            <MudTimelineItem Color="Color.Primary" Variant="Variant.Filled">
+                                <ItemContent>
+                                    @{
+                                        if (addressRs.city == null)
+                                        {
+                                            <MudSkeleton Animation="Animation.Wave"/>
+                                        }
+                                        else
+                                        {
+                                            <MudText Color="Color.Inherit">City : @addressRs.city</MudText>
+                                        }
+                                    }
+
+                                </ItemContent>
+                            </MudTimelineItem>
+
+                            <MudTimelineItem Color="Color.Primary" Variant="Variant.Filled">
+                                <ItemContent>
+                                    @{
+                                        if (addressRs.street == null)
+                                        {
+                                            <MudSkeleton Animation="Animation.Wave"/>
+                                        }
+                                        else
+                                        {
+                                            <MudText Color="Color.Inherit">Street : @addressRs.street</MudText>
+                                        }
+                                    }
+
+                                </ItemContent>
+                            </MudTimelineItem>
+
+                            <MudTimelineItem Color="Color.Primary" Variant="Variant.Filled">
+                                <ItemContent>
+                                    @{
+                                        if (addressRs.zipCode == null || addressRs.zipCode == "")
+                                        {
+                                            <MudSkeleton Animation="Animation.Wave"/>
+                                        }
+                                        else
+                                        {
+                                            <MudText Color="Color.Inherit">ZipCode : @addressRs.zipCode</MudText>
+                                        }
+                                    }
+
+                                </ItemContent>
+                            </MudTimelineItem>
+
+                            <MudTimelineItem Color="Color.Primary" Variant="Variant.Filled">
+                                <ItemContent>
+                                    @{
+                                        if (addressRs.state == null || addressRs.state == "")
+                                        {
+                                            <MudSkeleton Animation="Animation.Wave"/>
+                                        }
+                                        else
+                                        {
+                                            <MudText Color="Color.Inherit">State : @addressRs.state</MudText>
+                                        }
+                                    }
+
+                                </ItemContent>
+                            </MudTimelineItem>
+
+                        </MudTimeline>
+
+                    </MudTabPanel>
+
+
+                </MudTabs>
+
+
+            </MudItem>
+        </MudGrid>
+
+
+    </MudContainer>
+</MudContainer>
+

@@ -1,0 +1,86 @@
+/* Card Container Base */
+.order-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.order-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Product Item Hovering */
+.product-item-row {
+    transition: background-color 0.2s ease, padding 0.2s ease;
+    border-radius: 8px;
+}
+
+.product-item-row:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Image Hover Zoom Effect */
+.img-wrapper {
+    width: 64px;
+    height: 64px;
+    overflow: hidden;
+    background-color: #1e1e2d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.product-item-row:hover .product-img {
+    transform: scale(1.12);
+}
+
+/* Back Button Bounce Effect */
+.hover-bounce {
+    transition: transform 0.2s ease;
+}
+
+.hover-bounce:hover {
+    transform: translateX(-4px);
+}
+
+
+/* ==========================================
+   Print & PDF Export Styling
+   ========================================== */
+@media print {
+    /* إخفاء العناصر غير الضرورية في الفاتورة مثل الأزرار والـ Navbar */
+    .hide-on-print,
+    .mud-appbar,
+    .mud-drawer,
+    .mud-icon-button {
+        display: none !important;
+    }
+
+    /* تحسين الخلفية والألوان للطباعة */
+    body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+    }
+
+    .order-card {
+        border: 1px solid #ddd !important;
+        box-shadow: none !important;
+        background-color: #fff !important;
+    }
+
+    /* إلغاء حركات הـ Hover أثناء التصدير */
+    .order-card:hover {
+        transform: none !important;
+    }
+
+    .img-wrapper {
+        border: 1px solid #ccc;
+    }
+}

@@ -1,0 +1,84 @@
+@page "/editrole/{RoleId}/{RoleName}"
+@attribute [Authorize]
+
+
+<PageTitle>Edit Role</PageTitle>
+
+<MudContainer Style="padding-top:inherit;" MaxWidth="MaxWidth.Large">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudPaper Class="pa-4 mud-theme-primary">
+                <MudText Align="Align.Center" Typo="Typo.h4">@RolesVm.RoleName</MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    <MudContainer Style="padding-top:10px;" MaxWidth="MaxWidth.Large">
+        <EditForm Model="@RolesVm" OnValidSubmit="HandleEditRole">
+            <DataAnnotationsValidator/>
+            <MudGrid>
+                <MudItem xs="12" sm="12">
+                    <MudCard Elevation="3">
+                        <MudCardContent>
+                            <MudPaper Class="pa-4 mb-3">
+                                <MudTextField Label="Role Name"
+                                              @bind-Value="RolesVm.RoleName"
+                                              For="@(() => RolesVm.RoleName)"/>
+                            </MudPaper>
+
+                            <MudTable ServerData="ServerReload" 
+                                      @ref="_table" 
+                                      FixedHeader="true"
+                                      Hover="true"
+                                      Striped="true"
+                                      Elevation="0"
+                                      Outlined="true">
+                                <ToolBarContent>
+                                    <MudText Typo="Typo.h6">Users in This Role</MudText>
+                                    <MudSpacer/>
+                                    <MudTextField T="string" 
+                                                  ValueChanged="@(s => OnSearch(s))" 
+                                                  Placeholder="Search User"
+                                                  Adornment="Adornment.Start"
+                                                  Immediate="true"
+                                                  AdornmentIcon="@Icons.Material.Filled.Search"
+                                                  IconSize="Size.Medium"
+                                                  Class="mt-0"/>
+                                </ToolBarContent>
+
+                                <HeaderContent>
+                                    <MudTh>Select</MudTh>
+                                    <MudTh>User Name</MudTh>
+                                </HeaderContent>
+
+                                <RowTemplate Context="user">
+                                    <MudTd DataLabel="Select">
+                                        <MudCheckBox @bind-Value="user.IsSelected" Color="Color.Primary"/>
+                                    </MudTd>
+                                    <MudTd DataLabel="User Name">@user.UserName</MudTd>
+                                </RowTemplate>
+
+                                <NoRecordsContent>
+                                    <MudText Align="Align.Center" Class="pa-4">No users found</MudText>
+                                </NoRecordsContent>
+
+                                <PagerContent>
+                                    <MudTablePager PageSizeOptions="new int[] { 5, 10, 25 }"/>
+                                </PagerContent>
+                            </MudTable>
+                        </MudCardContent>
+
+                        <MudCardActions Class="pa-4">
+                            <MudButton ButtonType="ButtonType.Submit"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       Class="ml-auto">
+                                SAVE CHANGES
+                            </MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+    </MudContainer>
+</MudContainer>

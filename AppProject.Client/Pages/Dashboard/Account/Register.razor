@@ -1,0 +1,85 @@
+@page "/register"
+@using Microsoft.AspNetCore.Authorization
+@layout EmptyLayout
+@attribute [AllowAnonymous]
+
+<MudContainer Style="padding-top:inherit;" MaxWidth="MaxWidth.Large">
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudPaper Class="pa-4 mud-theme-primary">
+                <MudText Align="Align.Center" Typo="Typo.h4">Register</MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+
+
+    <EditForm Model="@registerVM" OnValidSubmit="HandleRegistration">
+        <DataAnnotationsValidator />
+        <MudGrid>
+            <MudItem xs="12" sm="7">
+                <MudCard>
+                    <MudCardContent>
+                        <MudTextField Label="DisplayName"
+                                      @bind-Value="registerVM.DisplayName" For="@(() => registerVM.DisplayName)" />
+
+                        <MudTextField Label="Email"
+                                      @bind-Value="registerVM.Email" For="@(() => registerVM.Email)" />
+
+                        <MudTextField Label="UserName"
+                                      @bind-Value="registerVM.UserName" For="@(() => registerVM.UserName)" />
+
+                        <MudTextField Label="Password" Class="mt-3"
+                                      @bind-Value="registerVM.Password" For="@(() => registerVM.Password)"
+                                      InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="ButtonTestclick" />
+
+                        <MudTextField Label="ConfirmPassword" Class="mt-3"
+                                      @bind-Value="registerVM.ConfirmPassword" For="@(() => registerVM.ConfirmPassword)"
+                                      InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="ButtonTestclick" />
+
+
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton ButtonType="ButtonType.Submit" Disabled="@isVisiblebtn" Variant="Variant.Filled" Color="Color.Primary" Style="border-radius: 20px; padding: 8px 30px;">
+                            @if (isVisiblebtn)
+                            {
+                                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                <MudText Class="ms-2">Processing ...</MudText>
+                            }
+                            else
+                            {
+                                <MudText>Register</MudText>
+                            }
+                        </MudButton>
+
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+            <MudItem xs="12" sm="5">
+                <MudPaper Class="pa-4 mud-height-full">
+                    <MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+                    @if (ShowMessage)
+                    {
+                        if (Success)
+                        {
+                            <MudAlert Severity="Severity.Success">@Message</MudAlert>
+                        }
+                        else
+                        {
+                            <MudAlert Severity="Severity.Warning">@Message</MudAlert>
+                        }
+
+                    }
+                    else
+                    {
+                        <MudText Color="@Color.Error">
+                            <ValidationSummary />
+                        </MudText>
+                    }
+
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    </EditForm>
+</MudContainer>
+ 

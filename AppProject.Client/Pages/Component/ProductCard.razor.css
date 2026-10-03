@@ -1,0 +1,44 @@
+.product-card-wrapper {
+    height: 100%;
+}
+
+.product-card-wrapper ::deep .product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    height: 100%;
+}
+
+.product-card-wrapper ::deep .product-card:hover {
+    transform: translateY(-6px) !important;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* تحديث الوصف ليقتطع بعد سطرين فقط */
+.description-text {
+    font-size: 0.85rem;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+}
+
+.thumb-img {
+    width: 38px;
+    height: 38px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #555;
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.thumb-img:hover {
+    transform: scale(1.08);
+}
+
+.active-thumb {
+    border: 2px solid #7c4dff;
+}

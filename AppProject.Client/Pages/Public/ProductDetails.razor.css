@@ -1,0 +1,129 @@
+.reviews-section {
+    width: 100%;
+}
+
+.leading-relaxed {
+    line-height: 1.6;
+}
+
+.color-pink {
+    color: #e55353 !important;
+}
+
+.main-image-wrapper {
+    position: relative;
+    width: 380px;
+    height: 380px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.02);
+    overflow: hidden;
+    cursor: zoom-in;
+}
+
+.main-details-img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    user-select: none;
+    -webkit-user-drag: none;
+    transition: transform 0.15s ease-out;
+    pointer-events: none;
+}
+
+.main-details-img.zoomed {
+    transform: scale(2.2);
+}
+
+.thumb-wrapper {
+    width: 70px;
+    height: 70px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.thumb-wrapper:hover {
+    border-color: #ff6b52;
+    transform: translateY(-2px);
+}
+
+.active-details-thumb {
+    border: 2px solid #ff6b52 !important;
+    box-shadow: 0 0 8px rgba(255, 107, 82, 0.4);
+}
+
+.thumb-details-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.qty-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.1s ease;
+}
+
+.btn-minus {
+    background-color: #e55353;
+}
+
+.btn-plus {
+    background-color: #2b2d42;
+}
+
+.qty-btn:active {
+    transform: scale(0.92);
+}
+
+.action-btn {
+    background-color: #ff6b52;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(255, 107, 82, 0.25);
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+    background-color: #e55a43;
+    transform: translateY(-2px);
+}
+
+.qty-display-input {
+    width: 50px;
+    height: 38px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    text-align: center;
+    font-size: 0.9rem;
+    background-color: transparent;
+    color: inherit;
+    outline: none;
+}
+
+.bg-dark-subtle {
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}

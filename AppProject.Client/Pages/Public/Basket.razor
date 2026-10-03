@@ -1,0 +1,141 @@
+@page "/Basket"
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-8 mb-12">
+    <!-- الهيدر: العنوان + زر إفراغ السلة بالكامل -->
+    <div class="d-flex justify-space-between align-center mb-6">
+        <MudText Typo="Typo.h4" Class="bold color-light">Shopping Cart</MudText>
+
+        @if (basket != null && basket.BasketItems.Any())
+        {
+            <MudButton Variant="Variant.Outlined" 
+                       Color="Color.Error" 
+                       StartIcon="@Icons.Material.Filled.DeleteSweep"
+                       OnClick="ClearFullBasket"
+                       Class="clear-btn">
+                Clear Cart
+            </MudButton>
+        }
+    </div>
+
+    @if (isLoading)
+    {
+        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+    }
+    else if (basket == null || !basket.BasketItems.Any())
+    {
+        <MudPaper Elevation="0" Class="pa-8 text-center rounded-lg border dark-card">
+            <MudIcon Icon="@Icons.Material.Outlined.ShoppingBag" Size="Size.Large" Class="mud-text-secondary mb-4" />
+            <MudText Typo="Typo.h6" Class="color-light mb-2">Your basket is empty</MudText>
+            <MudText Typo="Typo.body2" Class="mud-text-secondary mb-6">Looks like you haven't added anything to your cart yet.</MudText>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="NavigateToShopping">
+                Start Shopping
+            </MudButton>
+        </MudPaper>
+    }
+    else
+    {
+        <MudGrid>
+            <!-- جدول عناصر السلة -->
+            <MudItem xs="12" lg="8">
+                <MudPaper Elevation="0" Class="pa-4 rounded-lg border dark-card overflow-x-auto">
+                    <table class="custom-basket-table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Description</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in basket.BasketItems)
+                            {
+                                <tr class="basket-row">
+                                    <td class="product-col">
+                                        <div class="d-flex align-center gap-3 cursor-pointer" 
+                                             @onclick="() => NavigateToProductDetails(item.Id, item.Qunatity)">
+                                            <img src="@item.Image" alt="@item.Name" class="basket-img rounded-lg" />
+                                            <MudText Typo="Typo.subtitle2" Class="bold color-light text-truncate hover-underline">
+                                                @item.Name
+                                            </MudText>
+                                        </div>
+                                    </td>
+                                    <td class="desc-col">
+                                        <div class="line-clamp-2">
+                                            <MudText Typo="Typo.body2" Class="mud-text-secondary">
+                                                @item.Description
+                                            </MudText>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <MudText Typo="Typo.body1" Class="color-light">$@item.Price.ToString("N2")</MudText>
+                                    </td>
+                                    <td>
+                                        <div class="qty-control d-flex align-center gap-1">
+                                            <button class="qty-mini-btn" @onclick="() => UpdateQuantity(item, item.Qunatity - 1)">-</button>
+                                            <span class="qty-val color-light">@item.Qunatity</span>
+                                            <button class="qty-mini-btn" @onclick="() => UpdateQuantity(item, item.Qunatity + 1)">+</button>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <MudText Typo="Typo.body1" Class="bold color-pink">$@((item.Price * item.Qunatity).ToString("N2"))</MudText>
+                                    </td>
+                                    <td class="text-center">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Delete" 
+                                                       Color="Color.Error" 
+                                                       Size="Size.Small" 
+                                                       Class="delete-btn"
+                                                       OnClick="() => RemoveItem(item)" />
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </MudPaper>
+            </MudItem>
+
+            <!-- ملخص الحساب -->
+            <MudItem xs="12" lg="4">
+                <MudPaper Elevation="0" Class="pa-6 rounded-lg border dark-card">
+                    <MudText Typo="Typo.h6" Class="bold mb-4 color-light">Order Summary</MudText>
+                    
+                    <div class="d-flex justify-space-between mb-3">
+                        <MudText Typo="Typo.body2" Class="mud-text-secondary">Subtotal</MudText>
+                        <MudText Typo="Typo.body1" Class="color-light">$@Subtotal.ToString("N2")</MudText>
+                    </div>
+
+                    <div class="d-flex justify-space-between mb-3">
+                        <MudText Typo="Typo.body2" Class="mud-text-secondary">Estimated Shipping</MudText>
+                        <MudText Typo="Typo.body1" Class="color-light">$@Shipping.ToString("N2")</MudText>
+                    </div>
+
+                    <MudDivider Class="my-4" />
+
+                    <div class="d-flex justify-space-between mb-6">
+                        <MudText Typo="Typo.subtitle1" Class="bold color-light">Total</MudText>
+                        <MudText Typo="Typo.h5" Class="bold color-pink">$@TotalPrice.ToString("N2")</MudText>
+                    </div>
+
+                    <MudButton Variant="Variant.Filled" 
+                               Color="Color.Primary" 
+                               FullWidth="true" 
+                               Size="Size.Large"
+                               OnClick="NavigateToCheckout"
+                               Class="checkout-btn mb-3">
+                        Proceed to Checkout
+                    </MudButton>
+
+                    <MudButton Variant="Variant.Outlined" 
+                               Color="Color.Default" 
+                               FullWidth="true"
+                               OnClick="NavigateToShopping"
+                               Class="color-light border-subtle">
+                        Continue Shopping
+                    </MudButton>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    }
+</MudContainer>

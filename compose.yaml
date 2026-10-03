@@ -1,0 +1,68 @@
+﻿version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/azure-sql-edge:latest
+    container_name: sqlserver_db
+    user: root
+    platform: linux/amd64
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Samer@123
+    ports:
+      - "1434:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql/data
+    networks:
+      - app-network
+
+  redis:
+    image: redis:alpine
+    container_name: redis_cache
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+
+  appproject-api:
+    image: appproject.api
+    build:
+      context: .
+      dockerfile: AppProject.API/Dockerfile
+    container_name: app_api
+    user: root
+    ports:
+      - "5001:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__Ecomdatabase=Server=sqlserver;Database=AppProjectEcom;TrustServerCertificate=True;User=sa;Password=Samer@123;
+      - ConnectionStrings__Redis=redis:6379
+      - ClientSettings__BaseURL=http://localhost:6001
+    volumes:
+      - api_images:/app/wwwroot/images
+    depends_on:
+      - sqlserver
+      - redis
+    networks:
+      - app-network
+
+  appproject-client:
+    image: appproject.client
+    build:
+      context: .
+      dockerfile: AppProject.Client/Dockerfile
+    container_name: app_client
+    ports:
+      - "6001:80"
+    depends_on:
+      - appproject-api
+    networks:
+      - app-network
+
+volumes:
+  sqlserver_data:
+  api_images:
+
+networks:
+  app-network:
+    driver: bridge

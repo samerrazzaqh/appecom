@@ -1,0 +1,90 @@
+@page "/listcategory"
+@attribute [Authorize]
+
+<PageTitle>Categories</PageTitle>
+<MudOverlay @bind-Visible="isVisible" DarkBackground="true" AutoClose="true">
+    <MudProgressCircular Color="Color.Primary" Size="Size.Medium" Indeterminate="true"/>
+</MudOverlay>
+
+
+<MudContainer Style="padding-top:inherit;" MaxWidth="MaxWidth.Large">
+
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudPaper Class="pa-4 mud-theme-primary">
+                <MudText Align="Align.Center" Typo="Typo.h4">Categories</MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+
+    <MudContainer Style="padding-top:10px;" MaxWidth="MaxWidth.Large">
+        @*========================================================*@
+        <MudPaper Style="background-color:transparent; padding-bottom:10px;"
+                  Class="d-flex justify-start flex-grow-1 gap-4" Elevation="0">
+            <MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
+                <MudButton OnClick="@((e) => OpenDialogCreate(maxWidth))">Create Category</MudButton>
+            </MudButtonGroup>
+        </MudPaper>
+        @*========================================================*@
+
+
+
+        <MudGrid>
+            <MudItem xs="12" sm="12" md="12">
+
+                @if (CategoriesRS == null)
+                {
+                    <MudPaper Class="pa-4 ma-2" Elevation="0">
+                        <MudText Typo="Typo.h5">Not Found Item</MudText>
+                    </MudPaper>
+                }
+                else
+                {
+                    <MudDataGrid Filterable="true" QuickFilter="@_quickFilter" Bordered="true"
+                                 Outlined="true" T="CategoriesRS" Items="@CategoriesRS" SortMode="@_sortMode">
+
+                        <ToolBarContent>
+                            <MudSpacer/>
+                            <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start"
+                                          Immediate="true"
+                                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                                          Class="mt-0"></MudTextField>
+                        </ToolBarContent>
+
+
+                        <Columns>
+                            @*<PropertyColumn Property="x => x.CategoryId" Title="ID" Sortable="true" />*@
+                            <PropertyColumn Property="x => x!.name" Title="Name"/>
+                            <PropertyColumn Property="x => x!.description" Title="Description"/>
+
+                            <TemplateColumn CellClass="d-flex justify-end">
+                                <CellTemplate>
+                                    <MudStack Row>
+                                        <MudIconButton OnClick="@((e) => OpenDialogEdite(maxWidth, @context.Item!))"
+                                                       Icon="@Icons.Material.Filled.Edit" Variant="Variant.Outlined"
+                                                       Color="Color.Info" Size="Size.Medium"/>
+                                        <MudIconButton OnClick="@((e) => OpenDialogDelete(@context.Item!))"
+                                                       Icon="@Icons.Material.Filled.Delete" Variant="Variant.Outlined"
+                                                       Color="Color.Error" Size="Size.Medium"/>
+                                    </MudStack>
+                                </CellTemplate>
+                            </TemplateColumn>
+                        </Columns>
+
+                        <PagerContent>
+                            <MudDataGridPager T="CategoriesRS"/>
+                        </PagerContent>
+
+                    </MudDataGrid>
+                }
+            </MudItem>
+
+        </MudGrid>
+
+
+    </MudContainer>
+
+</MudContainer>
+
+

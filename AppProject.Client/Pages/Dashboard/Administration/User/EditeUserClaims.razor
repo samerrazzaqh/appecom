@@ -1,0 +1,118 @@
+@page "/EditeUserClaims/{UserId}"
+@attribute [Authorize]
+
+
+<PageTitle>Edit Role and Claims</PageTitle>
+
+@if (IsLoading)
+{
+    <MudOverlay Visible="true" DarkBackground="true" Absolute="false" Style="z-index: 9999;">
+        <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true"/>
+    </MudOverlay>
+}
+else
+{
+    <MudContainer Style="padding-top:20px;" MaxWidth="MaxWidth.Large">
+
+        <MudGrid Class="mb-4">
+            <MudItem xs="12">
+                <MudPaper Class="pa-4 mud-theme-primary elevation-2">
+                    <MudText Align="Align.Center" Typo="Typo.h4">@UserData.UserName</MudText>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+
+        <EditForm Model="@UserData" OnValidSubmit="HandleEditRoleandClaims">
+            <DataAnnotationsValidator/>
+
+            <MudCard Class="pa-4">
+                <MudCardContent>
+
+                    <!-- Block User Switch/CheckBox -->
+                    <MudPaper Style="margin-bottom:15px;" Class="pa-3">
+                        <MudCheckBox @bind-Value="UserData.Block" Color="Color.Error">
+                            Block @UserData.UserName
+                        </MudCheckBox>
+                    </MudPaper>
+
+                    <MudGrid>
+                        <!-- User Claims Table -->
+                        <MudItem xs="12" sm="6">
+                            <MudPaper Class="pa-2 mud-theme-primary mb-2">
+                                <MudText Align="Align.Center" Typo="Typo.h6">User Claims</MudText>
+                            </MudPaper>
+
+                            <MudTable Items="@UserData.ClaimsUser"
+                                      Hover="true"
+                                      Dense="true"
+                                      Elevation="3"
+                                      FixedHeader="true"
+                                      Height="250px">
+                                <HeaderContent>
+                                    <MudTh Style="width: 80px;">Select</MudTh>
+                                    <MudTh>Claim Type</MudTh>
+                                </HeaderContent>
+                                <RowTemplate Context="claim">
+                                    <MudTd DataLabel="Select">
+                                        <MudCheckBox @bind-Value="claim.IsSelected" Color="Color.Primary"/>
+                                    </MudTd>
+                                    <MudTd DataLabel="Claim Type">@claim.ClaimType : @claim.ClaimValue</MudTd>
+                                </RowTemplate>
+                                <NoRecordsContent>
+                                    <MudText Align="Align.Center" Class="pa-2">No Claims found</MudText>
+                                </NoRecordsContent>
+                            </MudTable>
+                        </MudItem>
+
+                        <!-- User Roles Table -->
+                        <MudItem xs="12" sm="6">
+                            <MudPaper Class="pa-2 mud-theme-primary mb-2">
+                                <MudText Align="Align.Center" Typo="Typo.h6">User Roles</MudText>
+                            </MudPaper>
+
+                            <MudTable Items="@UserData.RolesUser"
+                                      Hover="true"
+                                      Dense="true"
+                                      Elevation="3"
+                                      FixedHeader="true"
+                                      Height="250px">
+                                <HeaderContent>
+                                    <MudTh Style="width: 80px;">Select</MudTh>
+                                    <MudTh>Role Name</MudTh>
+                                </HeaderContent>
+                                <RowTemplate Context="role">
+                                    <MudTd DataLabel="Select">
+                                        <MudCheckBox @bind-Value="role.IsSelected" Color="Color.Primary"/>
+                                    </MudTd>
+                                    <MudTd DataLabel="Role Name">@role.RoleName</MudTd>
+                                </RowTemplate>
+                                <NoRecordsContent>
+                                    <MudText Align="Align.Center" Class="pa-2">No Roles found</MudText>
+                                </NoRecordsContent>
+                            </MudTable>
+                        </MudItem>
+                    </MudGrid>
+
+                </MudCardContent>
+
+                <MudCardActions Class="d-flex justify-end pa-4">
+                    <MudButton ButtonType="ButtonType.Submit" 
+                               Variant="Variant.Filled" 
+                               Color="Color.Primary" 
+                               Disabled="IsSubmitting">
+                        @if (IsSubmitting)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">Saving...</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Submit</MudText>
+                        }
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </EditForm>
+
+    </MudContainer>
+}

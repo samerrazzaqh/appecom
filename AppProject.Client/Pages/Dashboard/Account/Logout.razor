@@ -1,0 +1,25 @@
+@page "/logout"
+@using AppProject.Client.Authentication
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager Navigation
+@inject HttpClient _httpClient
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await _httpClient.GetAsync("api/Account/Logout");
+        }
+        catch
+        {
+        }
+        finally
+        {
+            await ((CustomAuthStateProvider)AuthStateProvider).MarkUserAsLoggedOut();
+        }
+        await ((CustomAuthStateProvider)AuthStateProvider).MarkUserAsLoggedOut();
+        Navigation.NavigateTo("/login",forceLoad:true);
+    }
+}

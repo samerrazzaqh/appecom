@@ -1,0 +1,232 @@
+@page "/ProductDetails/{ProductId:int}"
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-8 mb-12">
+    @if (isLoading)
+    {
+        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+    }
+    else if (product == null)
+    {
+        <MudText Typo="Typo.h5" Class="text-center my-8">Product not found.</MudText>
+    }
+    else
+    {
+        <!-- قسم تفاصيل المنتج الرئيسي -->
+        <MudGrid Class="mb-12">
+            <!-- معرض الصور -->
+            <MudItem xs="12" md="5">
+                <div class="main-image-wrapper pa-2 rounded-lg border"
+                     @onmousemove="HandleMouseMove"
+                     @onmouseleave="HandleMouseLeave">
+
+                    <img src="@selectedImage" 
+                         alt="@product.Name" 
+                         class="main-details-img @(isZoomed ? "zoomed" : "")" 
+                         style="@ZoomStyle" />
+                </div>
+
+                @if (productImages != null && productImages.Count > 1)
+                {
+                    <div class="d-flex gap-2 mt-4 overflow-x-auto pb-2">
+                        @foreach (var img in productImages)
+                        {
+                            <div class="thumb-wrapper @(selectedImage == img ? "active-details-thumb" : "")"
+                                 @onclick="() => SelectImage(img)">
+                                <img src="@img" alt="thumb" class="thumb-details-img" />
+                            </div>
+                        }
+                    </div>
+                }
+            </MudItem>
+
+            <!-- تفاصيل المنتج ومعلومات -->
+            <MudItem xs="12" md="7" Class="pl-md-6">
+                @if (!string.IsNullOrEmpty(product.CategoryName))
+                {
+                    <MudText Typo="Typo.subtitle2" Class="mud-text-secondary text-capitalize mb-1">
+                        Category: @product.CategoryName
+                    </MudText>
+                }
+
+                <MudText Typo="Typo.h4" Class="bold mb-2">@product.Name</MudText>
+
+                <!-- ملخص تقييم المنتج في الأعلى -->
+                <div class="d-flex align-center gap-2 mb-4">
+                    <MudRating SelectedValue="@((int)Math.Round(averageRating))" ReadOnly="true" Size="Size.Small" Color="Color.Warning" />
+                    <MudText Typo="Typo.body2" Class="mud-text-secondary">
+                        @averageRating.ToString("0.0") (@productReviews.Count reviews)
+                    </MudText>
+                </div>
+
+                <!-- الأسعار والتخفيضات -->
+                <div class="d-flex align-center gap-2 mb-1">
+                    @if (product.OldPrice > 0)
+                    {
+                        <MudText Typo="Typo.h6" Class="text-decoration-line-through mud-text-secondary">
+                            $@product.OldPrice.ToString("N0")
+                        </MudText>
+                        <MudText Typo="Typo.body2" Class="color-pink">
+                            (@GetDiscountPercentage(product.OldPrice, product.NewPrice)% off)
+                        </MudText>
+                    }
+                </div>
+                <MudText Typo="Typo.h4" Class="bold mb-1">$@product.NewPrice.ToString("N0")</MudText>
+                <MudText Typo="Typo.body2" Class="mud-text-secondary mb-4">
+                    (Additional tax may apply on checkout)
+                </MudText>
+
+                <!-- التحكم بالكمية (+ / -) -->
+                <MudText Typo="Typo.body1" Class="color-pink mb-2">
+                    quantity : @quantity
+                </MudText>
+
+                <div class="d-flex align-center gap-2 mb-8">
+                    <button class="qty-btn btn-minus" @onclick="DecreaseQuantity">-</button>
+                    <button class="qty-btn btn-plus" @onclick="IncreaseQuantity">+</button>
+                </div>
+
+                <!-- شريط الأزرار السريع -->
+                <div class="d-flex align-center gap-3 mb-8 flex-wrap">
+                    <button class="action-btn btn-coral" @onclick="ToggleWishlist">
+                        <MudIcon Icon="@(isWishlist ? Icons.Material.Filled.Favorite : Icons.Material.Outlined.FavoriteBorder)" Size="Size.Small" Class="mr-1" /> Wishlist
+                    </button>
+
+                    <button class="action-btn btn-coral" @onclick="AddToCart">
+                        <MudIcon Icon="@Icons.Material.Filled.ShoppingCart" Size="Size.Small" Class="mr-1" /> Add to cart
+                    </button>
+
+                    <button class="action-btn btn-coral" @onclick="NavigateToShopping">
+                        <MudIcon Icon="@Icons.Material.Filled.ShoppingBag" Size="Size.Small" Class="mr-1" /> shopping
+                    </button>
+
+                    <input type="number" class="qty-display-input" @bind="quantity" readonly />
+                </div>
+
+                <!-- الوصف بالتفصيل -->
+                <MudText Typo="Typo.h6" Class="color-pink bold mb-2">Product Details</MudText>
+                <MudText Typo="Typo.body2" Class="mud-text-secondary leading-relaxed mb-6">
+                    @product.Description
+                </MudText>
+
+                <!-- صندوق المساعدة والمعلومات -->
+                <MudPaper Elevation="0" Class="pa-4 rounded-lg border bg-dark-subtle mb-4">
+                    <div class="d-flex align-center gap-3">
+                        <MudIcon Icon="@Icons.Material.Filled.ChatBubbleOutline" Color="Color.Info" />
+                        <MudText Typo="Typo.body2">
+                            Have a question about our products? Feel free to contact our support.
+                        </MudText>
+                    </div>
+                </MudPaper>
+
+                <div class="d-flex align-center gap-2 mud-text-secondary mb-2">
+                    <MudIcon Icon="@Icons.Material.Filled.LocalShipping" Size="Size.Small" />
+                    <MudText Typo="Typo.body2">Delivery done in 3 days from date of purchase</MudText>
+                </div>
+            </MudItem>
+        </MudGrid>
+
+        <MudDivider Class="my-8" />
+
+        <!-- قسم التقييمات والمراجعات -->
+        <div class="reviews-section mb-12">
+            <MudText Typo="Typo.h5" Class="bold mb-6">Customer Reviews</MudText>
+
+            <MudGrid Class="mb-6">
+                <!-- نموذج إضافة تقييم -->
+                <MudItem xs="12" md="5">
+                    <MudPaper Elevation="0" Class="pa-5 rounded-lg border bg-dark-subtle">
+                        <MudText Typo="Typo.h6" Class="bold mb-3">Add Your Review</MudText>
+                        <EditForm Model="newRating" OnValidSubmit="SubmitRating">
+                            <div class="mb-3">
+                                <MudText Typo="Typo.caption" Class="mud-text-secondary d-block mb-1">Your Rating</MudText>
+                                <MudRating @bind-SelectedValue="newRating.Stars" MaxValue="5" Color="Color.Warning" />
+                            </div>
+
+                            <MudTextField @bind-Value="newRating.Content"
+                                          Label="Your Review"
+                                          Variant="Variant.Outlined"
+                                          Lines="3"
+                                          Class="mb-4"
+                                          Required="true"
+                                          RequiredError="Please enter your review text." />
+
+                            <MudButton ButtonType="ButtonType.Submit"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       Disabled="isSubmittingRating"
+                                       FullWidth="true"
+                                       Class="py-2">
+                                @if (isSubmittingRating)
+                                {
+                                    <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                                    <span>Submitting...</span>
+                                }
+                                else
+                                {
+                                    <span>Submit Review</span>
+                                }
+                            </MudButton>
+                        </EditForm>
+                    </MudPaper>
+                </MudItem>
+
+                <!-- قائمة المراجعات والتقييمات -->
+                <MudItem xs="12" md="7">
+                    @if (isLoadingRatings)
+                    {
+                        <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+                    }
+                    else if (productReviews == null || !productReviews.Any())
+                    {
+                        <MudPaper Elevation="0" Class="pa-6 text-center border rounded-lg bg-dark-subtle">
+                            <MudIcon Icon="@Icons.Material.Outlined.RateReview" Size="Size.Large" Class="mud-text-secondary mb-2" />
+                            <MudText Typo="Typo.body1" Class="mud-text-secondary">No reviews yet. Be the first to review this product!</MudText>
+                        </MudPaper>
+                    }
+                    else
+                    {
+                        <div class="d-flex flex-column gap-3">
+                            @foreach (var review in productReviews)
+                            {
+                                <MudPaper Elevation="0" Class="pa-4 rounded-lg border bg-dark-subtle">
+                                    <div class="d-flex justify-space-between align-center mb-2">
+                                        <div class="d-flex align-center gap-2">
+                                            <MudAvatar Color="Color.Primary" Size="Size.Small">
+                                                @(string.IsNullOrEmpty(review.UserName) ? "U" : review.UserName[0].ToString().ToUpper())
+                                            </MudAvatar>
+                                            <MudText Typo="Typo.subtitle2" Class="bold">@review.UserName</MudText>
+                                        </div>
+                                        <MudText Typo="Typo.caption" Class="mud-text-secondary">@review.ReviewTime</MudText>
+                                    </div>
+                                    <MudRating SelectedValue="review.Stars" ReadOnly="true" Size="Size.Small" Color="Color.Warning" Class="mb-2" />
+                                    <MudText Typo="Typo.body2" Class="leading-relaxed">@review.Content</MudText>
+                                </MudPaper>
+                            }
+                        </div>
+                    }
+                </MudItem>
+            </MudGrid>
+        </div>
+
+        <!-- قسم المنتجات المشابهة -->
+        @if (similarProducts != null && similarProducts.Any())
+        {
+            <MudDivider Class="my-8" />
+            <MudText Typo="Typo.h5" Class="bold mb-6">Similar Products</MudText>
+
+            <MudGrid>
+                @foreach (var item in similarProducts)
+                {
+                    <MudItem xs="12" sm="6" md="3">
+                        <ProductCard Title="@item.Name"
+                                     Description="@item.Description"
+                                     Price="@item.NewPrice"
+                                     OldPrice="@item.OldPrice"
+                                     Images="@GetImageUrls(item.Photos)"
+                                     OnDetails="@(() => NavigateToProduct(item.Id))" />
+                    </MudItem>
+                }
+            </MudGrid>
+        }
+    }
+</MudContainer>

@@ -1,0 +1,123 @@
+@page "/AddProduct"
+@attribute [Authorize]
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-6">
+    <MudPaper Elevation="3" Class="pa-6">
+        <MudText Typo="Typo.h5" GutterBottom="true" Class="mb-4">Add a new product</MudText>
+
+        <EditForm Model="@_productModel" OnValidSubmit="HandleSubmit">
+            <DataAnnotationsValidator />
+
+            <MudGrid>
+                <!-- اسم المنتج -->
+                <MudItem xs="12" sm="6">
+                    <MudTextField Label="Product Name" 
+                                  @bind-Value="_productModel.Name" 
+                                  For="@(() => _productModel.Name)" 
+                                  Variant="Variant.Outlined" Required="true" />
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudSelect T="int?" 
+                               Label="Category" 
+                               Placeholder="Please select the category" 
+                               @bind-Value="_productModel.CategoryId" 
+                               For="@(() => _productModel.CategoryId)"
+                               Variant="Variant.Outlined" 
+                               AnchorOrigin="Origin.BottomCenter">
+                        @if (_categories != null && _categories.Any())
+                        {
+                            @foreach (var category in _categories)
+                            {
+                                <MudSelectItem T="int?" Value="@category.id">
+                                    @category.name
+                                </MudSelectItem>
+                            }
+                        }
+                    </MudSelect>
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudNumericField Label="New Price" 
+                                     @bind-Value="_productModel.NewPrice" 
+                                     For="@(() => _productModel.NewPrice)" 
+                                     Variant="Variant.Outlined" Format="N2" />
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudNumericField Label="Old Price" 
+                                     @bind-Value="_productModel.OldPrice" 
+                                     For="@(() => _productModel.OldPrice)" 
+                                     Variant="Variant.Outlined" Format="N2" />
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudTextField Label="Description" 
+                                  @bind-Value="_productModel.Description" 
+                                  For="@(() => _productModel.Description)" 
+                                  Variant="Variant.Outlined" Lines="3" />
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudText Typo="Typo.subtitle2" Class="mb-2">Product images</MudText>
+                    
+                    <MudFileUpload T="IReadOnlyList<IBrowserFile>" OnFilesChanged="OnInputFileChanged" AppendMultipleFiles="true">
+                        <CustomContent Context="fileContext">
+                            <MudFab Color="Color.Primary"
+                                    StartIcon="@Icons.Material.Filled.Image"
+                                    OnClick="@fileContext.OpenFilePickerAsync"
+                                    Label="Choose photo" />
+                        </CustomContent>
+                    </MudFileUpload>
+                    
+                    
+
+                    @if (_filePreviews != null && _filePreviews.Any())
+                    {
+                        <MudGrid Class="mt-3">
+                            @foreach (var preview in _filePreviews)
+                            {
+                                <MudItem xs="6" sm="4" md="3">
+                                    <MudPaper Elevation="2" Class="pa-2 d-flex flex-column align-center relative">
+                                        <img src="@preview.Base64Url" 
+                                             alt="@preview.File.Name" 
+                                             style="width: 100%; height: 120px; object-fit: cover; border-radius: 4px;" />
+                        
+                                        <MudText Typo="Typo.caption" Class="mt-2 text-truncate" Style="max-width: 100%;">
+                                            @preview.File.Name
+                                        </MudText>
+
+                                        <MudIconButton Icon="@Icons.Material.Filled.Delete" 
+                                                       Color="Color.Error" 
+                                                       Size="Size.Small" 
+                                                       Class="mt-1"
+                                                       OnClick="@(() => RemoveFile(preview))" />
+                                    </MudPaper>
+                                </MudItem>
+                            }
+                        </MudGrid>
+                    }
+                </MudItem>
+
+                <MudItem xs="12" Class="d-flex justify-end mt-4">
+                    <MudButton ButtonType="ButtonType.Submit" 
+                               Variant="Variant.Filled" 
+                               Color="Color.Success" 
+                               Size="Size.Large" 
+                               Disabled="_isSubmitting"
+                               StartIcon="@Icons.Material.Filled.Save">
+                        @if (_isSubmitting)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">Saving...</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Save the product</MudText>
+                        }
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+    </MudPaper>
+</MudContainer>

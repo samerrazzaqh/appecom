@@ -1,0 +1,170 @@
+﻿@inherits LayoutComponentBase
+@using AppProject.Client.Service.Basket
+
+@inject BasketStateService BasketState
+@implements IDisposable
+@attribute [Authorize]
+
+<MudRTLProvider RightToLeft="@_rightToLeft">
+    <MudDialogProvider/>
+    <MudSnackbarProvider/>
+    <MudPopoverProvider/>
+    <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme"/>
+
+
+    <MudLayout>
+        <MudAppBar Elevation="1">
+
+            <AuthorizeView Roles="Admin">
+                <Authorized>
+                    <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
+                                   OnClick="@((e) => DrawerToggle())" Class="mr-2"/>
+                </Authorized>
+            </AuthorizeView>
+
+            <MudLink Href="/" Color="Color.Inherit" Underline="Underline.None" Class="mr-4 logo-hover">
+                <MudStack Row="true" AlignItems="AlignItems.Center">
+                    <MudIcon Icon="@Icons.Custom.Brands.MudBlazor" Size="Size.Large" Color="Color.Inherit"/>
+                    <MudText Typo="Typo.h6" Class="font-italic bold">E-commerce</MudText>
+                </MudStack>
+            </MudLink>
+
+            <MudStack Row="true" Spacing="4" Class="d-none d-md-flex mr-auto" AlignItems="AlignItems.Center">
+                <MudLink Href="/" Color="Color.Inherit" Underline="Underline.None" Class="nav-hover-link">Home</MudLink>
+                <MudLink Href="/shop" Color="Color.Inherit" Underline="Underline.None" Class="nav-hover-link">Shopping
+                </MudLink>
+                <MudLink Href="/about" Color="Color.Inherit" Underline="Underline.None" Class="nav-hover-link">About
+                    Us
+                </MudLink>
+                <MudLink Href="/best-seller" Color="Color.Inherit" Underline="Underline.None" Class="nav-hover-link">
+                    Best Seller
+                </MudLink>
+            </MudStack>
+
+            <MudSpacer/>
+
+            <MudTextField T="string" Placeholder="Search" Variant="Variant.Outlined" Margin="Margin.Dense"
+                          Class="mr-4 d-none d-sm-flex"
+                          Style="max-width: 300px; background-color: rgba(255,255,255,0.15);" Adornment="Adornment.End"
+                          AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Inherit"/>
+
+            <MudBadge Content="@BasketState.BasketCount" 
+                      Color="Color.Error" 
+                      Overlap="true" 
+                      Visible="@(BasketState.BasketCount > 0)" 
+                      Class="mr-2">
+                <MudIconButton Icon="@Icons.Material.Outlined.ShoppingCart" 
+                               Color="Color.Inherit" 
+                               Href="/Basket" />
+            </MudBadge>
+            
+
+            <MudMenu Icon="@Icons.Material.Outlined.AccountCircle" Color="Color.Inherit" Direction="Direction.Bottom"
+                     Dense="true" OffsetY="true">
+                <AuthorizeView>
+                    <Authorized>
+                        <MudMenuItem Href="/profile">
+                            <MudIcon Color="Color.Inherit" Icon="@Icons.Material.Sharp.Person" Class="mr-2"/>
+                            @context.User.FindFirst(ClaimTypes.Name)?.Value
+                        </MudMenuItem>
+                        <MudMenuItem Href="/logout">
+                            <MudIcon Color="Color.Inherit" Icon="@Icons.Material.Sharp.Logout" Class="mr-2"/>
+                            Logout
+                        </MudMenuItem>
+                    </Authorized>
+                    <NotAuthorized>
+                        <MudMenuItem Href="/login">
+                            <MudIcon Color="Color.Inherit" Icon="@Icons.Material.Sharp.Login" Class="mr-2"/>
+                            Login
+                        </MudMenuItem>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </MudMenu>
+
+            <MudToggleIconButton @bind-Toggled="@_isDarkMode" Icon="@Icons.Material.Filled.DarkMode"
+                                 Color="@Color.Inherit" Title="DarkMode" ToggledIcon="@Icons.Material.Filled.LightMode"
+                                 ToggledColor="@Color.Inherit" ToggledTitle="LightMode"/>
+
+            <MudToggleIconButton @bind-Toggled="@_rightToLeft" Icon="@Icons.Material.Filled.Language"
+                                 Color="@Color.Inherit" Title="Language" ToggledIcon="@Icons.Material.Filled.Language"
+                                 ToggledColor="@Color.Inherit" ToggledTitle="Language"/>
+
+        </MudAppBar>
+
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                <MudDrawer @bind-Open="_drawerOpen" Breakpoint="@Breakpoint.Xl" Elevation="1">
+                    <MudDrawerHeader/>
+                    <NavMenu/>
+                </MudDrawer>
+            </Authorized>
+        </AuthorizeView>
+
+        <MudMainContent>
+            @Body
+        </MudMainContent>
+
+
+        @* <footer> *@
+        @*     <h1>Samer</h1> *@
+        @* </footer> *@
+
+
+    </MudLayout>
+</MudRTLProvider>
+
+
+
+<style>
+    /* تأثير الشعار */
+    .logo-hover {
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .logo-hover:hover {
+        opacity: 0.8;
+    }
+
+    /* تأثير روابط التنقل */
+    .nav-hover-link {
+        white-space: nowrap;
+        transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+    }
+
+    .nav-hover-link:hover {
+        opacity: 0.7;
+        /* يمكنك تفعيل البروز الخفيف عبر سطر التكبير أدناه إن أردت */
+        transform: translateY(-1px);
+    }
+</style>
+
+@code {
+
+    private bool _rightToLeft = false;
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private MudTheme _theme = new();
+    private bool _isDarkMode = true;
+    
+    
+    protected override async Task OnInitializedAsync()
+    {
+        // الاشتراك في الحدث لإعادة رسم المكون عند تغيير عدد السلة
+        BasketState.OnChange += StateHasChanged;
+        
+        // جلب عدد السلة لأول مرة عند تحميل الصفحة
+        await BasketState.UpdateBasketCountAsync();
+    }
+
+    public void Dispose()
+    {
+        // إلغاء الاشتراك لتجنب تسريب الذاكرة (Memory Leaks)
+        BasketState.OnChange -= StateHasChanged;
+    }
+    
+}

@@ -1,0 +1,84 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net11.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <UserSecretsId>726c35a2-05df-43ed-8e99-4f330e6c55e0</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.8">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.8">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Stripe.net" Version="45.3.0" />
+        <PackageReference Include="AutoMapper" Version="16.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.8"/>
+        
+        
+        
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\Images\product 2\2fb3f8b7-e56e-4d8c-bba2-8b4bd647c664.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\product 2\493aa66d-824d-4420-85ab-9070a9b31ef8.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\product 2\4c26a684-fb65-48d4-a524-f73ebf5d0cc9.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\product 2\65f18e2a-8276-4037-9e22-298df74f661d.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\product 2\81d97726-2700-4e2e-8aea-f9981da83af7.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\product 2\d7d35b74-3275-4dbe-8276-f15a2c7f8c29.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\product1\5d58ab50-e15d-48ac-9347-464f0ddf78ec.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\product1\caa9ddee-cf80-49a4-a4ca-08e3d2afaaad.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\product1\d641dddd-7caf-405f-861d-8e4142f389e6.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Add a new product 1\26601234-9210-46c8-9b47-964590df9e99.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Add a new product 1\3850fa4d-9854-45c4-b779-68d1dd2a1b79.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Add a new product 1\60318275-a35b-4090-96b0-a0c4d2320ccf.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Add a new product 3\461163f2-9d62-4039-a52a-7b73b48011e5.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Add a new product 3\6c6ad893-9b33-43eb-b2f2-b8ce6fc78b50.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Add a new product 3\7f6ca42f-d14e-4f60-a14a-5901ba126b99.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Add a new product 5\06b5e6ed-73f8-4be2-9d84-51558da2effc.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Add a new product 5\08d8a889-3605-40d8-a262-162f9dd52920.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Add a new product 5\9362be7c-d9a4-422e-a595-d23f7c56fefe.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\product 7\36042194-49e4-4e18-9412-56756904f421.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\product 7\b3a0aece-e14f-4f70-b200-10bf9b9452b2.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\product 7\d9bc6f46-f69b-45b5-9c3c-1fa901108229.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Product 1\2cf6585b-af8c-4b85-a744-fb44669dc0f0.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Product 1\5187902d-cd30-4593-8029-7dad3f60d9a7.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Product 1\89f0f180-cfbc-49da-8585-3019142062ca.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Product 1\8ea97fb9-22ce-47f5-8ffa-f873de64188e.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Product 1\95adc526-41f9-454d-adb6-974dda36b4b6.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Product 1\96e4d35e-28d2-413b-8896-6e43375d7839.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Christen Michael\4c1b2c7c-b0dc-44f5-949d-3f16524b2a2d.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Christen Michael\c12e77f5-fb5c-4b86-b016-9e9a8c949886.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Christen Michael\c2fe2a38-c46e-4473-989d-5269e088e262.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Guinevere Berg\51bc9512-5a45-43e6-878d-923643d46c84.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Guinevere Berg\d00475ed-f71c-4cb3-adbd-4c557ee31f2b.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Guinevere Berg\f43b1065-dd6b-489e-8493-1341fb9c4f3d.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Aiko Lancaster\0b8f4d66-fc5e-4bc2-b3d2-909982f09fa1.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Aiko Lancaster\c9a4fc7e-9e53-4d89-8e1d-10b6a0d10ecc.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Aiko Lancaster\eb528cad-e12e-4122-b3a6-44cbcdb41ba7.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Leonard Adams\52f359cc-c3df-4056-ac90-1c3202c47fd2.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Leonard Adams\b904150b-e169-479e-ac90-136f5d78bcac.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Leonard Adams\ba09642b-0da5-4697-a12f-dfcd7d29bcf2.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Vera Briggs\8f739d26-80d3-456d-b189-c67579e966bf.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Vera Briggs\958318fe-e7bd-4f57-91ac-faa6ec58a607.jpeg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Images\Vera Briggs\b1e446bd-546d-4472-b71b-991af52e9b77.jpg" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
+
+</Project>

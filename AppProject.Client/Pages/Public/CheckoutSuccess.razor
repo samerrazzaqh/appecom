@@ -1,0 +1,36 @@
+@page "/CheckoutSuccess/{SessionId}"
+@attribute [Authorize]
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-12 mb-12 d-flex flex-column align-center justify-center">
+    <MudPaper Elevation="3" Class="pa-8 rounded-xl text-center w-100 dark-card">
+        
+        <!-- Icon Success Header -->
+        <MudAvatar Color="Color.Success" Variant="Variant.Filled" Size="Size.Large" Class="mb-4 pa-6">
+            <MudIcon Icon="@Icons.Material.Filled.Check" Size="Size.Large" Style="font-size: 3rem;" />
+        </MudAvatar>
+
+        <MudText Typo="Typo.h5" Class="bold mb-2 color-light">Thank you, your order is Confirmed!</MudText>
+
+        <MudDivider Class="my-6" />
+
+        <!-- Actions -->
+        <div class="d-flex justify-center gap-4">
+            <MudButton Variant="Variant.Outlined" 
+                       Color="Color.Primary" 
+                       Size="Size.Medium" 
+                       OnClick="NavigateToOrders"
+                       Class="px-6 rounded-lg">
+                View Order
+            </MudButton>
+
+            <MudButton Variant="Variant.Filled" 
+                       Color="Color.Primary" 
+                       Size="Size.Medium" 
+                       OnClick="NavigateToHome"
+                       Class="px-6 rounded-lg">
+                Continue Shopping
+            </MudButton>
+        </div>
+
+    </MudPaper>
+</MudContainer>

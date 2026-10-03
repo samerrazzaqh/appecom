@@ -1,0 +1,122 @@
+@page "/ViewOrder/{OrderId:int}"
+@attribute [Authorize]
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-8 mb-12">
+    @if (IsLoading)
+    {
+        <div class="d-flex justify-center align-center my-12" style="min-height: 400px;">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+        </div>
+    }
+    else if (Order == null)
+    {
+        <MudPaper Elevation="3" Class="pa-8 text-center rounded-xl order-card">
+            <MudIcon Icon="@Icons.Material.Outlined.ErrorOutline" Color="Color.Error" Style="font-size: 4rem;" Class="mb-3" />
+            <MudText Typo="Typo.h5" Class="bold mb-2">Order Not Found</MudText>
+            <MudText Typo="Typo.body1" Class="mud-text-secondary mb-6">We couldn't retrieve the details for Order #@OrderId.</MudText>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GoBackToHome" Class="px-6 rounded-lg">Back to Home</MudButton>
+        </MudPaper>
+    }
+    else
+    {
+        <!-- Header Controls -->
+        <div class="d-flex align-center justify-space-between mb-6 hide-on-print">
+            <div class="d-flex align-center gap-3">
+                <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" Color="Color.Default" OnClick="GoBackToHome" Class="hover-bounce" />
+                <div>
+                    <MudText Typo="Typo.h4" Class="bold">Order #@Order.Id</MudText>
+                    <MudText Typo="Typo.caption" Class="mud-text-secondary">Placed on @Order.OrderDate.ToString("MMM dd, yyyy - hh:mm tt")</MudText>
+                </div>
+            </div>
+    
+            <div class="d-flex gap-2">
+                <!-- زر التصدير والطباعة -->
+                <MudButton Variant="Variant.Outlined" 
+                           Color="Color.Primary" 
+                           StartIcon="@Icons.Material.Filled.PictureAsPdf" 
+                           OnClick="ExportToPdf" 
+                           Class="rounded-lg hover-bounce">
+                    Download PDF
+                </MudButton>
+
+                <MudChip T="string" Color="@GetStatusColor(Order.Status)" Variant="Variant.Filled" Size="Size.Medium" Class="bold px-4">
+                    @Order.Status
+                </MudChip>
+            </div>
+        </div>
+
+        <MudGrid Spacing="4">
+            <!-- Left Side: Order Items List -->
+            <MudItem xs="12" md="8">
+                <MudPaper Elevation="2" Class="pa-6 rounded-xl order-card mb-4">
+                    <MudText Typo="Typo.h6" Class="bold mb-4">Items Summary</MudText>
+                    <MudDivider Class="mb-4" />
+
+                    @foreach (var item in Order.OrderItems)
+                    {
+                        <div class="d-flex align-center justify-space-between py-3 product-item-row">
+                            <div class="d-flex align-center gap-4">
+                                <div class="img-wrapper rounded-lg">
+                                    <img src="@item.MainImage" alt="@item.ProductName" class="product-img" />
+                                </div>
+                                <div>
+                                    <MudText Typo="Typo.subtitle1" Class="bold">@item.ProductName</MudText>
+                                    <MudText Typo="Typo.body2" Class="mud-text-secondary">Qty: @item.Quntity × $@item.Price.ToString("N2")</MudText>
+                                </div>
+                            </div>
+                            <MudText Typo="Typo.subtitle1" Class="bold color-primary">
+                                $@((item.Price * item.Quntity).ToString("N2"))
+                            </MudText>
+                        </div>
+                        <MudDivider Class="my-2 opacity-50" />
+                    }
+                </MudPaper>
+            </MudItem>
+
+            <!-- Right Side: Shipping & Order Summary -->
+            <MudItem xs="12" md="4">
+                <!-- Shipping Details -->
+                <MudPaper Elevation="2" Class="pa-6 rounded-xl order-card mb-4">
+                    <div class="d-flex align-center gap-2 mb-3">
+                        <MudIcon Icon="@Icons.Material.Outlined.LocalShipping" Color="Color.Primary" />
+                        <MudText Typo="Typo.h6" Class="bold">Shipping Address</MudText>
+                    </div>
+                    <MudDivider Class="mb-3" />
+                    <MudText Typo="Typo.subtitle1" Class="bold">@Order.ShippingAddress.FirstName @Order.ShippingAddress.LastName</MudText>
+                    <MudText Typo="Typo.body2" Class="mud-text-secondary">@Order.ShippingAddress.Street</MudText>
+                    <MudText Typo="Typo.body2" Class="mud-text-secondary">@Order.ShippingAddress.City, @Order.ShippingAddress.State @Order.ShippingAddress.ZipCode</MudText>
+                    
+                    <div class="mt-4 pt-2 border-top">
+                        <MudText Typo="Typo.caption" Class="mud-text-secondary">Method</MudText>
+                        <MudText Typo="Typo.body2" Class="bold">@Order.DeliveryMethod</MudText>
+                    </div>
+                </MudPaper>
+
+                <!-- Payment Breakdown -->
+                <MudPaper Elevation="2" Class="pa-6 rounded-xl order-card">
+                    <div class="d-flex align-center gap-2 mb-3">
+                        <MudIcon Icon="@Icons.Material.Outlined.ReceiptLong" Color="Color.Primary" />
+                        <MudText Typo="Typo.h6" Class="bold">Payment Summary</MudText>
+                    </div>
+                    <MudDivider Class="mb-4" />
+
+                    <div class="d-flex justify-space-between mb-2">
+                        <MudText Typo="Typo.body2" Class="mud-text-secondary">Subtotal</MudText>
+                        <MudText Typo="Typo.body2" Class="bold">$@Order.SubTotal.ToString("N2")</MudText>
+                    </div>
+                    <div class="d-flex justify-space-between mb-2">
+                        <MudText Typo="Typo.body2" Class="mud-text-secondary">Shipping</MudText>
+                        <MudText Typo="Typo.body2" Class="bold">$@((Order.Total - Order.SubTotal).ToString("N2"))</MudText>
+                    </div>
+                    
+                    <MudDivider Class="my-3" />
+
+                    <div class="d-flex justify-space-between align-center">
+                        <MudText Typo="Typo.subtitle1" Class="bold">Total Amount</MudText>
+                        <MudText Typo="Typo.h6" Class="bold color-primary">$@Order.Total.ToString("N2")</MudText>
+                    </div>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    }
+</MudContainer>

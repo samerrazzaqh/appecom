@@ -1,0 +1,136 @@
+@page "/ListProducts"
+@attribute [Authorize]
+
+
+
+<PageTitle>Products</PageTitle>
+
+<MudContainer Style="padding-top:inherit;" MaxWidth="MaxWidth.Large">
+
+    <MudGrid>
+        <MudItem xs="12">
+            <MudPaper Class="pa-4 mud-theme-primary">
+                <MudText Align="Align.Center" Typo="Typo.h4">Products</MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    <MudContainer Style="padding-top:10px;" MaxWidth="MaxWidth.Large">
+
+        <MudPaper Style="background-color:transparent; padding-bottom:10px;"
+                  Class="d-flex justify-start flex-grow-1 gap-4" Elevation="0">
+            <MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
+                <MudButton Href="/AddProduct">Create Product</MudButton>
+            </MudButtonGroup>
+        </MudPaper>
+
+        <MudTable ServerData="LoadProducts" Dense="true" Hover="true" @ref="_table">
+            <ToolBarContent>
+                <MudGrid Class="align-center flex-grow-1">
+                    <MudItem xs="12" sm="3">
+                        <MudText Typo="Typo.h6">Products</MudText>
+                    </MudItem>
+
+                    <!-- تصفية حسب الفئة ديناميكياً -->
+                    <MudItem xs="12" sm="3">
+                        <MudSelect T="int?"
+                                   Label="Category"
+                                   Value="SelectedCategoryId"
+                                   ValueChanged="OnCategoryChanged"
+                                   Dense="true"
+                                   Margin="Margin.Dense">
+                            <MudSelectItem T="int?" Value="null">All Categories</MudSelectItem>
+                            @foreach (var cat in CategoriesRS)
+                            {
+                                <MudSelectItem T="int?" Value="@cat.id">@cat.name</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+
+                    <!-- الترتيب ديناميكياً -->
+                    <MudItem xs="12" sm="3">
+                        <MudSelect T="string"
+                                   Label="Sort By"
+                                   Value="SelectedSort"
+                                   ValueChanged="OnSortChanged"
+                                   Dense="true"
+                                   Margin="Margin.Dense">
+                            <MudSelectItem Value="@("PriceDce")">Price: High to Low</MudSelectItem>
+                            <MudSelectItem Value="@("PriceAce")">Price: Low to High</MudSelectItem>
+                        </MudSelect>
+                    </MudItem>
+
+                    <!-- البحث -->
+                    <MudItem xs="12" sm="3">
+                        <MudTextField T="string"
+                                      Value="_searchString"
+                                      ValueChanged="@(s => OnSearch(s))"
+                                      Placeholder="Search"
+                                      Adornment="Adornment.Start"
+                                      AdornmentIcon="@Icons.Material.Filled.Search"
+                                      IconSize="Size.Medium"
+                                      Class="mt-0"
+                                      Immediate="true"
+                                      DebounceInterval="300"/>
+                    </MudItem>
+                </MudGrid>
+            </ToolBarContent>
+
+            <HeaderContent>
+                <MudTh>Name</MudTh>
+                <MudTh>Description</MudTh>
+                <MudTh>Image</MudTh>
+                <MudTh>Price</MudTh>
+                <MudTh>Category</MudTh>
+                <MudTh>Action</MudTh>
+            </HeaderContent>
+
+            <RowTemplate>
+                <MudTd DataLabel="Name">@context.Name</MudTd>
+                <MudTd DataLabel="Description">@context.Description</MudTd>
+                <MudTd DataLabel="Image">
+                    @if (context.Photos != null && context.Photos.Any())
+                    {
+                        <img src="@($"{AppConstant.BaseApiAddress}{context.Photos.FirstOrDefault()?.ImageName}")"
+                             alt="@context.Name" width="50"
+                             height="50" style="object-fit:cover; border-radius: 4px;"/>
+                    }
+                </MudTd>
+                <MudTd DataLabel="Price">$@context.NewPrice</MudTd>
+                <MudTd DataLabel="Category">@context.CategoryName</MudTd>
+
+                <MudTd DataLabel="Action">
+                    <MudStack Row>
+                        <AuthorizeView Policy="CanEditRole" Context="auth">
+                            <Authorized>
+                                <MudIconButton OnClick="@(() => EditeProduct(context.Id))"
+                                               Icon="@Icons.Material.Filled.Edit" Variant="Variant.Outlined"
+                                               Color="Color.Info" Size="Size.Medium"/>
+                            </Authorized>
+                        </AuthorizeView>
+                        <AuthorizeView Policy="CanDeleteRole" Context="auth">
+                            <Authorized>
+                                <MudIconButton OnClick="@((e) => OpenDialogDelete(@context.Id!, @context.Name))"
+                                               Icon="@Icons.Material.Filled.Delete" Variant="Variant.Outlined"
+                                               Color="Color.Error" Size="Size.Medium"/>
+                            </Authorized>
+                        </AuthorizeView>
+                    </MudStack>
+                </MudTd>
+            </RowTemplate>
+
+            <NoRecordsContent>
+                <MudText>No products found</MudText>
+            </NoRecordsContent>
+
+            <LoadingContent>
+                <MudText>Loading...</MudText>
+            </LoadingContent>
+
+            <PagerContent>
+                <MudTablePager PageSizeOptions="new int[] { 2, 5, 10, 25 }"/>
+            </PagerContent>
+        </MudTable>
+
+    </MudContainer>
+</MudContainer>

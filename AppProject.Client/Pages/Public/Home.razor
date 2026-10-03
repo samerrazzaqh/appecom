@@ -1,0 +1,121 @@
+﻿@page "/"
+@attribute [AllowAnonymous]
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-6">
+    
+    <MudText Typo="Typo.h3" Class="bold mb-6">Shopping</MudText>
+
+    <!-- شريط البحث والإحصائيات -->
+    <MudGrid Class="mb-6" AlignItems="AlignItems.Center">
+        <MudItem xs="12" sm="4">
+            <MudText Typo="Typo.body2" Class="mud-text-secondary">
+                showing @products.Count of @productFilter.TotatlCount
+            </MudText>
+        </MudItem>
+        <MudItem xs="12" sm="8" Class="d-flex justify-end">
+            <div class="search-box-group">
+                <input type="text"  class="search-input"  placeholder="Search..."  @bind="productFilter.Search"  @bind:event="oninput"  @onkeyup="HandleKeyUp" />
+                <button class="search-btn btn-red" @onclick="HandleSearch">Search</button>
+                <button class="search-btn btn-dark" @onclick="HandleReset">Reset</button>
+            </div>
+        </MudItem>
+    </MudGrid>
+
+    <MudGrid>
+        <!-- القائمة الجانبية -->
+        <MudItem xs="12" md="3">
+            <MudPaper Elevation="0" Class="pa-4 rounded-lg border">
+                
+                <!-- قسم الترتيب -->
+                <MudText Typo="Typo.h6" Class="bold mb-2">Sorting</MudText>
+                <MudSelect T="string"
+                           Value="productFilter.Sort"
+                           ValueChanged="OnSortChanged"
+                           Variant="Variant.Outlined"
+                           Margin="Margin.Dense"
+                           Class="mb-6">
+                    <MudSelectItem Value="@("PriceDce")">Price: High to Low</MudSelectItem>
+                    <MudSelectItem Value="@("PriceAce")">Price: Low to High</MudSelectItem>
+                </MudSelect>
+
+                <!-- قسم التصنيفات الديناميكية -->
+                <MudText Typo="Typo.h6" Class="bold mb-3">Categories</MudText>
+                <MudPaper Elevation="0" Class="pa-0 bg-transparent">
+                    <div class="d-flex flex-column gap-1">
+                        <!-- All Categories -->
+                        <MudButton Variant="@(productFilter.CategoryId == null ? Variant.Filled : Variant.Text)"
+                                   Color="@(productFilter.CategoryId == null ? Color.Primary : Color.Default)"
+                                   FullWidth="true"
+                                   Class="justify-start py-2 px-3 text-capitalize"
+                                   OnClick="() => OnCategorySelected(null)">
+                            All Categories
+                        </MudButton>
+
+                        @if (categories != null && categories.Any())
+                        {
+                            @foreach (var cat in categories)
+                            {
+                                <MudButton Variant="@(productFilter.CategoryId == cat.id ? Variant.Filled : Variant.Text)"
+                                           Color="@(productFilter.CategoryId == cat.id ? Color.Primary : Color.Default)"
+                                           FullWidth="true"
+                                           Class="justify-start py-2 px-3 text-capitalize"
+                                           OnClick="() => OnCategorySelected(cat.id)">
+                                    @cat.name
+                                </MudButton>
+                            }
+                        }
+                    </div>
+                </MudPaper>
+
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="9" Class="d-flex flex-column justify-between">
+    
+            <!-- حاوية المنتجات بارتفاع أدنى لمنع القفز عند تغيير الصفحة -->
+            <div style="min-height: 520px;">
+                @if (isLoading)
+                {
+                    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+                }
+                else if (!products.Any())
+                {
+                    <MudText Typo="Typo.h6" Class="text-center my-6">No products found.</MudText>
+                }
+                else
+                {
+                    <MudGrid>
+                        @foreach (var product in products)
+                        {
+                            <MudItem xs="12" sm="6" md="4" Key="@product.Id">
+                                <ProductCard Title="@product.Name"
+                                             Description="@product.Description"
+                                             Price="@product.NewPrice"
+                                             OldPrice="@(product.OldPrice > 0 ? product.OldPrice : null)"
+                                             Images="@GetImageUrls(product.Photos)"
+                                             Rating="@GetProductRating(product.Id)"
+                                             OnAddToCart="() => AddToCart(product)"
+                                             OnDetails="() => ViewDetails(product)"
+                                             OnBookmarkToggle="(status) => ToggleBookmark(product, status)" />
+                            </MudItem>
+                        }
+                    </MudGrid>
+                }
+            </div>
+
+            <!-- أداة الـ Pagination -->
+            <div class="d-flex justify-center mt-auto pt-6" style="min-height: 56px;">
+                @if (totalPages > 1)
+                {
+                    <MudPagination Selected="@productFilter.PageNumber" 
+                                   Count="@totalPages" 
+                                   SelectedChanged="OnPageChanged" 
+                                   Color="Color.Primary" 
+                                   Variant="Variant.Filled" 
+                                   Disabled="@isLoading" />
+                }
+            </div>
+
+        </MudItem>
+    </MudGrid>
+</MudContainer>
