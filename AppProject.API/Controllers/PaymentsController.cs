@@ -18,7 +18,7 @@ namespace AppProject.API.Controllers
         private readonly IConfiguration _configuration; // 1. حقن Configuration
 
         // ⚠️ انتبه: هذا المفتاح يتغير في كل مرة تشغل فيها امر stripe listen جديد
-        const string endpointSecret = "whsec_go5Vsev3OxyqWb1ibgOctinZvbD48sl1";
+        const string endpointSecret = "whsec_203b8qvaDwmOHF4i8G8jiF6JVt46ij1l";
 
         public PaymentsController(
             IPaymentService paymentService, 
@@ -81,8 +81,8 @@ namespace AppProject.API.Controllers
 
                 // 3. قراءة رابط الـ Client المباشر من appsettings.json للـ API
                 //string clientUrl = _configuration["ClientSettings"]?.TrimEnd('/') ?? "http://localhost:6001";
-                  string clientUrl = "https://samer-kubernetes.infra-x.cloud/";
-
+                string clientUrl = _configuration["ClientSettings"]?.TrimEnd('/') ?? "https://samer-kubernetes.infra-x.cloud";
+                
                 var options = new SessionCreateOptions
                 {
                     PaymentMethodTypes = new List<string> { "card" },
