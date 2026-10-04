@@ -80,8 +80,8 @@ namespace AppProject.API.Controllers
                 }).ToList();
 
                 // 3. قراءة رابط الـ Client المباشر من appsettings.json للـ API
-                //string clientUrl = _configuration["ClientSettings"]?.TrimEnd('/') ?? "http://localhost:6001";
-                string clientUrl = _configuration["ClientSettings"]?.TrimEnd('/') ?? "https://samer-kubernetes.infra-x.cloud";
+                //string clientUrl = _configuration["ClientSettings:BaseUrl"]?.TrimEnd('/') ?? "http://localhost:6001";
+                string clientUrl = _configuration["ClientSettings:BaseUrl"]?.TrimEnd('/') ?? "https://samer-kubernetes.infra-x.cloud/";
                 
                 var options = new SessionCreateOptions
                 {
