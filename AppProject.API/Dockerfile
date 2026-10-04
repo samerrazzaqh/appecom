@@ -25,6 +25,6 @@ COPY --from=publish /app/publish .
 
 # إنشاء مجلد الصور وإعطاؤه الصلاحيات الكاملة
 USER root
-RUN mkdir -p /app/wwwroot/images && chmod -R 777 /app/wwwroot/images
+RUN mkdir -p /app/wwwroot/Images && chmod -R 777 /app/wwwroot/Images
 
 ENTRYPOINT ["dotnet", "AppProject.API.dll"]

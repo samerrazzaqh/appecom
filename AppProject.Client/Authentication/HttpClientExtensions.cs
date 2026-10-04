@@ -16,8 +16,8 @@ public static class HttpClientExtensions
             {
                 // قراءة IConfiguration تلقائياً من الـ Dependency Injection Container
                 var configuration = sp.GetRequiredService<IConfiguration>();
-                // var apiBaseAddress = configuration["ApiSettings:BaseApiAddress"] ?? "http://localhost:5001/";
-                var apiBaseAddress = configuration["ApiSettings:BaseApiAddress"] ?? "https://samer-kubernetes.infra-x.cloud/";
+                 var apiBaseAddress = configuration["ApiSettings:BaseApiAddress"] ?? "http://localhost:5001/";
+                // var apiBaseAddress = configuration["ApiSettings:BaseApiAddress"] ?? "https://samer-kubernetes.infra-x.cloud/";
 
                 client.BaseAddress = new Uri(apiBaseAddress);
             })
