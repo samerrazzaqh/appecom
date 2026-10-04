@@ -18,7 +18,7 @@ namespace AppProject.API.Controllers
         private readonly IConfiguration _configuration; // 1. حقن Configuration
 
         // ⚠️ انتبه: هذا المفتاح يتغير في كل مرة تشغل فيها امر stripe listen جديد
-        const string endpointSecret = "whsec_203b8qvaDwmOHF4i8G8jiF6JVt46ij1l";
+        const string endpointSecret = "whsec_pzYSVLgNMqNsFI3SYnaYusdnWNkw4Zbi";
 
         public PaymentsController(
             IPaymentService paymentService, 
