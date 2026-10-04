@@ -40,8 +40,10 @@ public static class infrastructureRegisterationClient
         services.AddTransient<UnauthorizedHandler>();
 
         // 1. قراءة رابط الـ API من appsettings.json بدلاً من AppConstant
-        var apiBaseAddress = configuration["ApiSettings:BaseApiAddress"] ?? "http://localhost:5001/";
-
+        // var apiBaseAddress = configuration["ApiSettings:BaseApiAddress"] ?? "http://localhost:5001/";
+        var apiBaseAddress = configuration["ApiSettings:BaseApiAddress"] ?? "https://samer-kubernetes.infra-x.cloud/";
+        
+        
         services.AddHttpClient("ServerApi", client => { client.BaseAddress = new Uri(apiBaseAddress); })
             .AddHttpMessageHandler<CookieHandler>()
             .AddHttpMessageHandler<UnauthorizedHandler>();

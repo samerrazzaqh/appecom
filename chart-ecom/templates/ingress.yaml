@@ -1,0 +1,50 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  name: samer-form-ingress
+  namespace: workshop-samer
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: samer-kubernetes.infra-x.cloud
+      http:
+        paths:
+          - backend:
+              service:
+                name: frontend-service
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+          - backend:
+              service:
+                name: backend-service
+                port:
+                  number: 80
+            path: /api
+            pathType: Prefix
+            
+            #--------Path Images------------------------------------
+          - backend:
+              service:
+                name: backend-service
+                port:
+                  number: 80
+            path: /Images
+            pathType: Prefix
+          - backend:
+              service:
+                name: backend-service
+                port:
+                  number: 80
+            path: /images
+            pathType: Prefix
+            
+            
+  tls:
+    - hosts:
+        - samer-kubernetes.infra-x.cloud
+      secretName: samer-form-tls

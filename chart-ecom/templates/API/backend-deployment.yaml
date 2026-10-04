@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: workshop-samer
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: backend
+          image: ghcr.io/samerrazzaqh/appecom/api:bde7f9da968735f05bdab54c428dc0722e8d3deb
+          imagePullPolicy: Always
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"
+            - name: ClientSettings__BaseUrl
+              value: "https://samer-kubernetes.infra-x.cloud/"
+            - name: EmailSetting__Port
+              value: "587"
+            - name: EmailSetting__From
+              value: "samerrazzaqt@gmail.com"
+            - name: EmailSetting__Username
+              value: "samerrazzaqt@gmail.com"
+            - name: EmailSetting__Smtp
+              value: "smtp.gmail.com"
+            - name: Jwt__Issuer
+              value: "doseHieu"
+            
+            # Secrets mapping
+            - name: ConnectionStrings__EcomDatabase
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secrets
+                  key: ConnectionStrings__EcomDatabase
+            - name: ConnectionStrings__redis
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secrets
+                  key: ConnectionStrings__redis
+            - name: EmailSetting__Password
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secrets
+                  key: EmailSetting__Password
+            - name: Jwt__Secret
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secrets
+                  key: Jwt__Secret
+            - name: Jwt__RefreshTokenSecret
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secrets
+                  key: Jwt__RefreshTokenSecret
+            - name: StripSetting__secretKey
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secrets
+                  key: StripSetting__secretKey
+            - name: StripSetting__publishKey
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secrets
+                  key: StripSetting__publishKey
+          ports:
+            - containerPort: 8080
+          # تثبيت الـ Volume داخل الحاوية
+          volumeMounts:
+            - name: images-storage
+              mountPath: /app/wwwroot/Images
+      # تعريف الـ Volume وتوصيله بـ PVC
+      volumes:
+        - name: images-storage
+          persistentVolumeClaim:
+            claimName: backend-images-pvc
