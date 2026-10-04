@@ -18,7 +18,7 @@ var apiAddress = builder.Configuration["ApiSettings:BaseApiAddress"] ?? "http://
 
 
 // تحديث القيم في AppConstant
-AppConstant.BaseApiAddressClient = clientAddress;
+//AppConstant.BaseApiAddressClient = clientAddress;
 AppConstant.BaseApiAddress = apiAddress;
 
 builder.Services.infrastructureConfigurationClient(builder.Configuration);
