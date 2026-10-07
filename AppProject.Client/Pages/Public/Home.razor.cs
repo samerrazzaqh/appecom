@@ -28,7 +28,7 @@ public partial class Home : ComponentBase
     private ProductVM productFilter = new ProductVM
     {
         PageNumber = 1,
-        pageSize = 3,
+        pageSize = 6,
         Sort = "PriceDce"
     };
 
