@@ -236,17 +236,17 @@ public partial class Home : ComponentBase
             if (result != null && result.StatusCode != 400)
             {
                 await BasketState.UpdateBasketCountAsync();
-                Snackbar.Add("تمت إضافة المنتج إلى السلة بنجاح", Severity.Success);
+                Snackbar.Add("The product has been successfully added to the cart.", Severity.Success);
             }
             else
             {
-                Snackbar.Add($"حدث خطأ أثناء الإضافة: {result?.Message ?? "Bad Request"}", Severity.Error);
+                Snackbar.Add($"An error occurred while adding: {result?.Message ?? "Bad Request"}", Severity.Error);
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error in AddToCart: {ex.Message}");
-            Snackbar.Add("حدث خطأ غير متوقع", Severity.Error);
+            Snackbar.Add("An unexpected error occurred.", Severity.Error);
         }
     }
 

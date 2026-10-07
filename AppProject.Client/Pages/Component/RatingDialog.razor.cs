@@ -40,18 +40,18 @@ public partial class RatingDialog: ComponentBase
 
             if (isSuccess)
             {
-                Snackbar.Add("تم إضافة تقييمك بنجاح!", Severity.Success);
+                Snackbar.Add("Your rating has been added successfully!", Severity.Success);
                 MudDialog.Close(DialogResult.Ok(true));
             }
             else
             {
-                Snackbar.Add("فشل إرسال التقييم. ربما قمت بتقييم هذا المنتج مسبقاً أو يلزمك تسجيل الدخول.", Severity.Error);
+                Snackbar.Add("Failed to submit the rating. You may have already rated this product, or you need to log in.", Severity.Error);
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error submitting rating: {ex.Message}");
-            Snackbar.Add("حدث خطأ أثناء إرسال التقييم.", Severity.Error);
+            Snackbar.Add("An error occurred while sending the rating.", Severity.Error);
         }
         finally
         {

@@ -163,7 +163,7 @@ public partial class ProductDetails : ComponentBase
     {
         if (newRating.Stars < 1 || newRating.Stars > 5)
         {
-            Snackbar.Add("يرجى اختيار التقييم بالنجوم.", Severity.Warning);
+            Snackbar.Add("Please select a star rating.", Severity.Warning);
             return;
         }
 
@@ -175,19 +175,19 @@ public partial class ProductDetails : ComponentBase
 
             if (isSuccess)
             {
-                Snackbar.Add("تم إرسال التقييم بنجاح!", Severity.Success);
+                Snackbar.Add("The evaluation has been sent successfully!", Severity.Success);
                 newRating = new RatingVM { Stars = 5, Content = string.Empty };
                 await LoadRatings();
             }
             else
             {
-                Snackbar.Add("فشل إرسال التقييم. ربما قمت بتقييم هذا المنتج مسبقاً أو يلزمك تسجيل الدخول.", Severity.Error);
+                Snackbar.Add("Failed to submit the rating. You may have already rated this product, or you need to log in.", Severity.Error);
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error submitting rating: {ex.Message}");
-            Snackbar.Add("حدث خطأ أثناء إرسال التقييم.", Severity.Error);
+            Snackbar.Add("An error occurred while sending the rating.", Severity.Error);
         }
         finally
         {
@@ -307,7 +307,7 @@ public partial class ProductDetails : ComponentBase
                 await BasketService.DeleteBasketAsync(basketId);
                 await LocalStorage.RemoveItemAsync("basket_id");
                 await BasketState.UpdateBasketCountAsync();
-                Snackbar.Add("تمت إزالة المنتج وإفراغ السلة", Severity.Info);
+                Snackbar.Add("The product has been removed and the cart emptied.", Severity.Info);
                 return;
             }
 
@@ -316,17 +316,17 @@ public partial class ProductDetails : ComponentBase
             if (result != null && result.StatusCode != 400)
             {
                 await BasketState.UpdateBasketCountAsync();
-                Snackbar.Add("تم تحديث السلة بنجاح", Severity.Success);
+                Snackbar.Add("The cart has been successfully updated.", Severity.Success);
             }
             else
             {
-                Snackbar.Add($"حدث خطأ أثناء التحديث: {result?.Message ?? "Bad Request"}", Severity.Error);
+                Snackbar.Add($"An error occurred during the update: {result?.Message ?? "Bad Request"}", Severity.Error);
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error in AddToCart: {ex.Message}");
-            Snackbar.Add("حدث خطأ غير متوقع", Severity.Error);
+            Snackbar.Add("An unexpected error occurred.", Severity.Error);
         }
     }
 
