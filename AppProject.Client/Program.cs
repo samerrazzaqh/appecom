@@ -13,8 +13,8 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 var clientAddress = builder.HostEnvironment.BaseAddress;
 
 // قراءة عنوان الـ API من appsettings.json
-//var apiAddress = builder.Configuration["ApiSettings:BaseApiAddress"] ?? "http://localhost:5001/";
- var apiAddress = builder.Configuration["ApiSettings:BaseApiAddress"] ?? "https://samer-kubernetes.infra-x.cloud/";
+var apiAddress = builder.Configuration["ApiSettings:BaseApiAddress"] ?? "http://localhost:5001/";
+ //var apiAddress = builder.Configuration["ApiSettings:BaseApiAddress"] ?? "https://samer-kubernetes.infra-x.cloud/";
 
 
 // تحديث القيم في AppConstant
