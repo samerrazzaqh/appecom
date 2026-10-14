@@ -73,7 +73,7 @@ jobs:
           chmod 600 $HOME/.kube/config
 
       - name: Deploy with Helm
-        working-directory: ./chart-ocean
+        working-directory: ./chart-ecom 
         run: |
           helm upgrade --install ecom-release . --create-namespace -n "${NAMESPACE}" \
             --set image.backend.image.repository=ghcr.io/${{ env.REPO_LC }}/api \
