@@ -18,7 +18,7 @@ spec:
       imagePullSecrets:
         - name: ghcr-pull-secret
       containers:
-        - name: frontend
+        - name: frontend 
           image: ghcr.io/samerrazzaqh/appecom/client:bde7f9da968735f05bdab54c428dc0722e8d3deb
           imagePullPolicy: Always
           env:
