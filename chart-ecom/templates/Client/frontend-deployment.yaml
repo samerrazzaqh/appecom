@@ -22,7 +22,7 @@ spec:
           image: ghcr.io/samerrazzaqh/appecom/client:bde7f9da968735f05bdab54c428dc0722e8d3deb
           imagePullPolicy: Always
           env:
-            - name: ApiSettings__BaseApiAddress
+            - name: ApiSettings__BaseApiAddress 
               value: "https://samer-kubernetes.infra-x.cloud/"
           ports:
             - containerPort: 80

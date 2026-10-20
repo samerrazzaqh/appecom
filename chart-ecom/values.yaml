@@ -1,0 +1,22 @@
+namespace: workshop-samer
+
+
+
+
+grafana:
+  enabled: true
+
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+
+    path: /
+    pathType: Prefix
+
+    hosts:
+      - samer-grafana.infra-x.cloud
+
+    tls:
+      - secretName: samer-grafana-tls
+        hosts:
+          - samer-grafana.infra-x.cloud

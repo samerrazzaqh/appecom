@@ -75,6 +75,6 @@ jobs:
       - name: Deploy with Helm
         working-directory: ./chart-ecom 
         run: |
-          helm upgrade --install ecom-release . --create-namespace -n "${NAMESPACE}" \
+          helm upgrade --install samer-release . --create-namespace -n "${NAMESPACE}" \
             --set image.backend.image.repository=ghcr.io/${{ env.REPO_LC }}/api \
             --set image.frontend.image.repository=ghcr.io/${{ env.REPO_LC }}/client
