@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: praxis-form-samer
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/samerrazzaqh/appecom.git
+    targetRevision: main
+    path: chart-ecom 
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: workshop-samer
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: samer-podinfo
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://stefanprodan.github.io/podinfo
+    targetRevision: 6.15.0
+    chart: podinfo
+    helm:
+      values: |
+        replicaCount: 1
+        ingress:
+          enabled: true
+          ingressClassName: nginx
+          hosts:
+            - host: samer-podinfo.infra-x.cloud
+              paths:
+                - path: /
+                  pathType: Prefix
+          tls:
+            - secretName: samer-podinfo-tls
+              hosts:
+                - samer-podinfo.infra-x.cloud
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: workshop-samer
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
