@@ -10,7 +10,7 @@ spec:
     targetRevision: main
     path: chart-ecom 
     helm:
-      valueFiles:
+      valueFiles: 
         - values.yaml
   destination:
     server: https://kubernetes.default.svc
