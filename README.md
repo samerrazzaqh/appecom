@@ -190,4 +190,5 @@ A pre-configured Postman Collection file (`AppEcomBlazor.postman_collection.json
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/samerrazzaqh/appecom/main/ImageDoc/Screenshot 2026-10-31 at 12.29.09 PM.png" alt="Checkout Preview" width="700"/>
+ <img src="https://raw.githubusercontent.com/samerrazzaqh/appecom/main/ImageDoc/Screenshot 2026-10-31 at 12.29.24 PM.png" alt="Checkout Preview" width="700"/>
 </p>
