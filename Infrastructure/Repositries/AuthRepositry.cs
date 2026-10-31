@@ -81,7 +81,7 @@ namespace Infrastructure.Repositries
 
             var result = new EmailDTO(
                 email,
-                "a.j47sharp@gmail.com",
+                "samerrazzaqd@gmail.com",
                 subject,
                 EmailStringBody.send(email, code, component, message, clientBaseUrl)
             );
